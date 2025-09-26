@@ -7,155 +7,131 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg1: linear-gradient(135deg,#ffefba,#ffffff);
-    --panel-bg: #fff;
-    --primary: #0066ff;
-    --accent: #ff6b6b;
-    --green: #12b886;
-    --muted: #6b7280;
-    --card-radius: 14px;
-    --shadow: 0 12px 30px rgba(11,35,88,0.08);
+    --bg:#f7fbff;
+    --panel:#ffffff;
+    --primary:#0066ff;
+    --accent1:#ff7a7a;
+    --accent2:#6b8bff;
+    --muted:#6b7280;
+    --radius:14px;
+    --shadow:0 12px 30px rgba(11,35,88,0.08);
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#f7fbff,#ffffff);color:#062030;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
-  .app{width:100%;max-width:980px}
-  header{display:flex;gap:16px;align-items:center;margin-bottom:18px;justify-content:center}
-  .logo{width:84px;height:84px;border-radius:18px;background:linear-gradient(135deg,#007bff,#00c6ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:28px;box-shadow:var(--shadow)}
-  .title{font-size:1.8rem;font-weight:800;text-align:center}
-  .subtitle{color:var(--muted);font-size:0.95rem;text-align:center;margin-top:6px}
-  .card{background:var(--panel-bg);border-radius:var(--card-radius);padding:20px;box-shadow:var(--shadow);margin-bottom:14px}
-  .centerbox{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px}
-  .bigbtn{min-width:240px;padding:14px 18px;border-radius:12px;border:0;font-weight:800;font-size:1.05rem;color:white;cursor:pointer;box-shadow:0 8px 20px rgba(10,88,255,0.12)}
-  .btn-cycle{background:linear-gradient(90deg,#007bff,#0096ff)}
-  .btn-warm{background:linear-gradient(90deg,#ff7a7a,#ffb86b)}
-  .btn-new{background:linear-gradient(90deg,#34c759,#00d4a6)}
-  .btn-list{background:linear-gradient(90deg,#9b5cff,#6b8bff)}
-  .small{color:var(--muted)}
-  input,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #eef6ff;font-size:1rem;background:transparent}
-  textarea{min-height:140px;white-space:pre-wrap;resize:vertical}
-  .actions-row{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:12px;flex-wrap:wrap}
-  .exports{position:fixed;right:22px;bottom:22px;background:linear-gradient(135deg,#001d6e,#0047b3);color:white;padding:12px;border-radius:12px;box-shadow:0 12px 30px rgba(2,6,23,0.28);display:flex;gap:8px;align-items:center;z-index:90}
+  body{margin:0;font-family:Inter,system-ui,Roboto,Arial;background:linear-gradient(180deg,#f7fbff,#ffffff);color:#062030;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
+  .app{width:100%;max-width:900px}
+  .card{background:var(--panel);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);text-align:center}
+  .logo{width:84px;height:84px;border-radius:18px;background:linear-gradient(135deg,#007bff,#00c6ff);display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:28px;margin:0 auto 12px}
+  h1{margin:6px 0 0 0;font-size:28px}
+  .subtitle{color:var(--muted);margin-top:6px}
+  .bigbtn{min-width:260px;padding:14px 18px;border-radius:12px;border:0;font-weight:800;font-size:1.05rem;color:white;cursor:pointer;background:linear-gradient(90deg,#34c759,#00d4a6);box-shadow:0 8px 20px rgba(10,88,255,0.12);}
+  .smallbtn{margin-top:12px;background:#fff;border:1px solid rgba(0,0,0,0.06);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
+  .exports{position:fixed;right:20px;bottom:20px;background:linear-gradient(135deg,#001d6e,#0047b3);color:white;padding:12px;border-radius:12px;display:flex;gap:8px;align-items:center;box-shadow:0 12px 30px rgba(2,6,23,0.28);z-index:90}
   .exports button{background:transparent;border:1px solid rgba(255,255,255,0.12);color:white;padding:8px 10px;border-radius:10px;font-weight:700;cursor:pointer}
-  .exports .csv{background:linear-gradient(90deg,#ffbf00,#ff7a00);border:none;padding:10px 12px;border-radius:10px}
-  .exports .pdf{background:linear-gradient(90deg,#ec4899,#8b5cf6);border:none;padding:10px 12px;border-radius:10px}
-  .help-reset{display:flex;gap:8px;justify-content:center;margin-top:12px}
-  .ghost{background:#fff;color:var(--primary);border:1px solid rgba(0,102,255,0.08);padding:8px 10px;border-radius:10px;cursor:pointer}
-  .session{padding:14px;border-radius:12px;border:1px solid #f1f5ff;margin-bottom:10px;background:linear-gradient(180deg,#ffffff,#fbfdff)}
-  .session .d{font-weight:800;color:#0066ff}
+  .csv{background:linear-gradient(90deg,#ffbf00,#ff7a00);border:none;padding:10px 12px;border-radius:10px}
+  .pdf{background:linear-gradient(90deg,#ec4899,#8b5cf6);border:none;padding:10px 12px;border-radius:10px}
+  .helpreset{display:flex;gap:8px;justify-content:center;margin-top:10px}
+  .ghost{background:#fff;color:var(--primary);border:1px solid rgba(0,102,255,0.08);padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:600}
   footer{margin-top:18px;text-align:center;color:var(--muted);font-size:0.9rem}
-  .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(3,7,18,0.45);z-index:60;padding:20px}
-  .modal .card{max-width:760px}
-  @media (max-width:720px){ .logo{width:64px;height:64px} .bigbtn{min-width:180px} .exports{right:12px;bottom:12px} }
+  .hidden{display:none}
+  @media (max-width:720px){ .bigbtn{min-width:200px} .exports{right:12px;bottom:12px} }
 </style>
 </head>
 <body>
   <div class="app">
-    <header>
+    <!-- Simplified splash: only logo, title, start button; help & reset small underneath -->
+    <div class="card" id="panel-splash">
       <div class="logo">SC</div>
-    </header>
-    <div class="title">ScanCarnet</div>
-    <div class="subtitle">Carnet d'entraînement — Équipe EPS Lycée Vauban — LUXEMBOURG</div>
-
-    <div class="card centerbox" id="panel-splash">
-      <h2 style="margin:0">Bienvenue</h2>
-      <div class="small">Appuie sur Démarrer pour créer ton profil.</div>
-      <div style="height:8px"></div>
-      <button id="btnStart" class="bigbtn btn-new">Démarrer</button>
-      <div class="help-reset">
-        <button id="btnHelp" class="ghost">Aide</button>
-        <button id="btnResetTop" class="ghost">Réinitialiser</button>
+      <h1>ScanCarnet</h1>
+      <div class="subtitle">Carnet d'entraînement — Équipe EPS Lycée Vauban — LUXEMBOURG</div>
+      <div style="height:14px"></div>
+      <button id="btnStart" class="bigbtn">Démarrer</button>
+      <div class="helpreset">
+        <button id="btnHelp" class="ghost" style="font-size:0.9rem;padding:6px 8px">Aide</button>
+        <button id="btnResetTop" class="ghost" style="font-size:0.9rem;padding:6px 8px">Réinitialiser</button>
       </div>
     </div>
 
+    <!-- Profile (hidden initially) -->
     <div class="card hidden" id="panel-profile" style="display:none">
-      <div class="centerbox">
-        <h3 style="margin:0">Profil élève</h3>
-        <div class="row" style="width:100%">
-          <div style="flex:1"><label class="small">Nom</label><input id="nom" placeholder="Nom"/></div>
-          <div style="flex:1"><label class="small">Prénom</label><input id="prenom" placeholder="Prénom"/></div>
-          <div style="flex:1"><label class="small">Classe</label><input id="classe" placeholder="Ex: Terminale A"/></div>
-        </div>
-        <div class="actions-row">
-          <button id="saveProfile" class="bigbtn btn-cycle">Sauvegarder</button>
-          <button id="backSplash" class="ghost">Retour</button>        </div>
+      <h2>Profil élève</h2>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
+        <input id="nom" placeholder="Nom" style="width:28%"/>
+        <input id="prenom" placeholder="Prénom" style="width:28%"/>
+        <input id="classe" placeholder="Classe" style="width:28%"/>
       </div>
+      <div style="height:12px"></div>
+      <button id="saveProfile" class="bigbtn" style="background:linear-gradient(90deg,#007bff,#0096ff)">Sauvegarder</button>
+      <div style="height:8px"></div>
+      <button id="backToSplash" class="smallbtn">Retour</button>
     </div>
 
+    <!-- Dashboard -->
     <div class="card hidden" id="panel-dashboard" style="display:none">
-      <div class="centerbox">
-        <div style="font-weight:800" id="profileLine">—</div>
-        <div class="small">Ton carnet — actions</div>
+      <h2 id="profileLine">—</h2>
+      <div class="subtitle" style="margin-bottom:12px">Ton carnet — actions</div>
 
-        <div style="height:12px"></div>
-        <div class="actions-row" id="mainActions">
-          <button id="btnCycle" class="bigbtn btn-cycle">Cycle</button>
-          <button id="btnWarmup" class="bigbtn btn-warm">Échauffement</button>
-          <button id="btnNew" class="bigbtn btn-new">Nouvelle séance</button>
-          <button id="btnList" class="bigbtn btn-list">Voir séances</button>
-        </div>
-
-        <div style="height:6px"></div>
-        <div class="small muted">Export et partage en bas à droite.</div>
+      <div style="display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center">
+        <button id="btnCycle" class="bigbtn" style="background:linear-gradient(90deg,#007bff,#0096ff)">Cycle</button>
+        <button id="btnWarmup" class="bigbtn" style="background:linear-gradient(90deg,#ff7a7a,#ffb86b)">Échauffement</button>
+        <button id="btnNew" class="bigbtn" style="background:linear-gradient(90deg,#34c759,#00d4a6)">Nouvelle séance</button>
+        <button id="btnList" class="bigbtn" style="background:linear-gradient(90deg,#9b5cff,#6b8bff)">Voir séances</button>
       </div>
     </div>
 
+    <!-- Cycle / Warmup / New session / List hidden panels (kept minimal) -->
     <div class="card hidden" id="panel-cycle" style="display:none">
       <h3>Cycle (APSA)</h3>
-      <label class="small">Nom du cycle</label>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <input id="cycleName" placeholder="Ex : Badminton" />
-        <button id="createCycle" class="ghost">Créer / Sélectionner</button>
-      </div>
-      <div id="cycleList" style="margin-top:12px"></div>
+      <input id="cycleName" placeholder="Ex : Badminton" style="width:66%"/>
+      <div style="height:8px"></div>
+      <button id="createCycle" class="bigbtn" style="background:linear-gradient(90deg,#007bff,#0096ff);min-width:200px">Créer / Sélectionner</button>
+      <div id="cycleList" style="margin-top:12px;text-align:left"></div>
+      <div style="height:8px"></div>
+      <button id="cycleBack" class="smallbtn">Retour</button>
     </div>
 
     <div class="card hidden" id="panel-warmup" style="display:none">
       <h3>Échauffement (lié au cycle)</h3>
-      <div class="small" id="warmupCycleName">—</div>
-      <label class="small">Échauffement (texte multi-lignes)</label>
-      <textarea id="warmText" placeholder="- Footing 8 min"></textarea>
+      <div id="warmupCycleName" class="subtitle">—</div>
+      <textarea id="warmText" placeholder="- Footing 8 min" style="width:100%;margin-top:10px"></textarea>
       <div style="height:10px"></div>
-      <div style="display:flex;gap:8px;justify-content:center">
-        <button id="saveWarm" class="bigbtn btn-warm">Enregistrer</button>
-        <button id="warmBack" class="ghost">Retour</button>
-      </div>
+      <button id="saveWarm" class="bigbtn" style="background:linear-gradient(90deg,#ff7a7a,#ffb86b);min-width:200px">Enregistrer</button>
+      <div style="height:8px"></div>
+      <button id="warmBack" class="smallbtn">Retour</button>
     </div>
 
     <div class="card hidden" id="panel-newsession" style="display:none">
       <h3>Nouvelle séance</h3>
-      <div class="small">La date sera ajoutée automatiquement (Europe/Luxembourg).</div>
-      <label class="small">Saisie unique</label>
-      <textarea id="sessionText" placeholder="Décris la séance..."></textarea>
+      <div class="subtitle">La date est ajoutée automatiquement (Europe/Luxembourg).</div>
+      <textarea id="sessionText" placeholder="Décris la séance..." style="width:100%;margin-top:10px"></textarea>
       <div style="height:10px"></div>
-      <div style="display:flex;gap:8px;justify-content:center">
-        <button id="saveSession" class="bigbtn btn-new">Enregistrer séance</button>
-        <button id="sessionBack" class="ghost">Retour</button>
-      </div>
-      <div style="height:8px" class="small muted">Cycle courant : <span id="currentCycle">—</span></div>
+      <button id="saveSession" class="bigbtn" style="background:linear-gradient(90deg,#34c759,#00d4a6);min-width:200px">Enregistrer séance</button>
+      <div style="height:8px"></div>
+      <button id="sessionBack" class="smallbtn">Retour</button>
     </div>
 
     <div class="card hidden" id="panel-list" style="display:none">
       <h3>Séances archivées</h3>
-      <div class="small">Liste (du plus récent au plus ancien)</div>
-      <div id="sessionsContainer" style="margin-top:12px"></div>
+      <div id="sessionsContainer" style="margin-top:12px;text-align:left"></div>
       <div style="height:8px"></div>
-      <div style="display:flex;justify-content:center"><button id="listBack" class="ghost">Retour</button></div>
+      <button id="listBack" class="smallbtn">Retour</button>
     </div>
 
     <footer>ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</footer>
   </div>
 
+  <!-- export panel (unchanged) -->
   <div class="exports" role="dialog" aria-label="Exports">
     <button class="csv" id="btnExportCSV">Exporter CSV</button>
     <button class="pdf" id="btnExportPDF">Générer PDF</button>
   </div>
 
-  <div id="modalHelp" class="modal">
-    <div class="card">
+  <!-- help modal -->
+  <div id="modalHelp" class="modal hidden" style="display:none">
+    <div class="card" style="max-width:720px">
       <div style="display:flex;justify-content:space-between;align-items:center"><strong>Aide — ScanCarnet</strong><button id="closeHelp" class="ghost">Fermer</button></div>
       <div style="height:8px"></div>
-      <ol style="padding-left:18px">
-        <li>Démarrer → Remplis ton profil.</li>
+      <ol style="padding-left:18px;text-align:left">
+        <li>Appuie sur <strong>Démarrer</strong> puis remplis ton profil.</li>
         <li>Créer / sélectionner un cycle (ex : Badminton).</li>
         <li>Ajouter un échauffement type si tu veux.</li>
         <li>Nouvelle séance → écrire → Enregistrer (date figée).</li>
@@ -166,38 +142,115 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <script>
+// Fixed and simplified JavaScript wiring to avoid earlier JS errors that could block buttons
 const $ = id => document.getElementById(id);
-const STORAGE_KEY = 'scancarnet_v6';
-function loadDB(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e){ return {}; } }
+const STORAGE_KEY = 'scancarnet_v7';
+
+function loadDB(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }catch(e){ return {}; } }
 function saveDB(db){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
 function defaultDB(){ return { profile:{nom:'',prenom:'',classe:''}, cycles:[], selected:null }; }
 function getDB(){ let d = loadDB(); if(!d || !d.profile){ d = defaultDB(); saveDB(d); } return d; }
 function setDB(d){ saveDB(d); DB = d; }
+
 function nid(){ return Math.random().toString(36).slice(2,9); }
-function todayLux(){ try{ return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Luxembourg' }); } catch(e){ return new Date().toISOString().slice(0,10); } }
+function todayLux(){ try{ return new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Luxembourg'}); }catch(e){ return new Date().toISOString().slice(0,10); } }
+
 let DB = getDB();
-function showPanel(id){ ['panel-splash','panel-profile','panel-dashboard','panel-cycle','panel-warmup','panel-newsession','panel-list'].forEach(x=>$(x).classList.add('hidden')); $(id).classList.remove('hidden'); }
-function updateProfileLine(){ const p = DB.profile; $('profileLine').textContent = `${p.nom||'—'} ${p.prenom||''} — ${p.classe||''}`; }
-showPanel('panel-splash'); updateProfileLine();
-$('btnStart').onclick = ()=> showPanel('panel-profile');
-$('backSplash').onclick = ()=> showPanel('panel-splash');
-$('saveProfile').onclick = ()=> { const d = getDB(); d.profile.nom = $('nom').value.trim(); d.profile.prenom = $('prenom').value.trim(); d.profile.classe = $('classe').value.trim(); setDB(d); updateProfileLine(); alert('Profil enregistré'); showPanel('panel-dashboard'); };
-$('btnHelp').onclick = ()=> $('modalHelp').style.display='flex';
-$('closeHelp').onclick = ()=> $('modalHelp').style.display='none';
-$('btnCycle').onclick = ()=> { renderCycles(); showPanel('panel-cycle'); };
-$('btnWarmup').onclick = ()=> { const c = DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert('Sélectionne ou crée d\'abord un cycle'); renderCycles(); showPanel('panel-cycle'); return; } $('warmupCycleName').textContent = c.name; $('warmText').value = c.warmup || ''; showPanel('panel-warmup'); };
-$('btnNew').onclick = ()=> { const c = DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert('Sélectionne ou crée d\'abord un cycle'); renderCycles(); showPanel('panel-cycle'); return; } $('currentCycle').textContent = c.name; $('sessionText').value = ''; showPanel('panel-newsession'); };
-$('btnList').onclick = ()=> { renderSessions(); showPanel('panel-list'); };
-$('createCycle').onclick = ()=> { const name = $('cycleName').value.trim(); if(!name){ alert('Donne un nom au cycle'); return; } let d = getDB(); let c = d.cycles.find(x=>x.name.toLowerCase()===name.toLowerCase()); if(!c){ c = { id:nid(), name, warmup:'', sessions:[] }; d.cycles.push(c); } d.selected = c.id; setDB(d); renderCycles(); alert('Cycle sélectionné : '+c.name); showPanel('panel-dashboard'); };
-function renderCycles(){ const node = $('cycleList'); node.innerHTML=''; const d = getDB(); if(!d.cycles.length){ node.innerHTML = '<div class="small muted">Aucun cycle</div>'; return; } d.cycles.forEach(c=>{ const el = document.createElement('div'); el.style.padding='10px'; el.style.borderBottom='1px solid #f1f7ff'; el.innerHTML = `<strong>${c.name}</strong> <span style="color:#6b7280">(${(c.sessions||[]).length} séances)</span> <div style="margin-top:8px"><button class="ghost" data-id="${c.id}">Sélectionner</button></div>`; node.appendChild(el); el.querySelector('button').onclick = (e)=>{ const id = e.currentTarget.dataset.id; let dd = getDB(); dd.selected = id; setDB(dd); alert('Cycle sélectionné'); showPanel('panel-dashboard'); }; }); }
-$('saveWarm').onclick = ()=> { let d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Aucun cycle'); return; } c.warmup = $('warmText').value || ''; setDB(d); alert('Échauffement enregistré'); showPanel('panel-dashboard'); };
-$('warmBack').onclick = ()=> showPanel('panel-dashboard');
-$('saveSession').onclick = ()=> { const txt = $('sessionText').value.trim(); if(!txt){ alert('Écris quelque chose'); return; } let d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Aucun cycle sélectionné'); return; } const date = todayLux(); const now = new Date().toISOString(); const s = { id:nid(), dateISO: date, text: txt, created_atISO: now }; c.sessions = c.sessions || []; c.sessions.push(s); setDB(d); $('sessionText').value = ''; alert('Séance enregistrée ('+date+')'); showPanel('panel-dashboard'); };
-$('sessionBack').onclick = ()=> showPanel('panel-dashboard');
-function renderSessions(){ const node = $('sessionsContainer'); node.innerHTML = ''; const d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ node.innerHTML = '<div class="small muted">Aucun cycle sélectionné</div>'; return; } if(!(c.sessions||[]).length){ node.innerHTML = '<div class="small muted">Aucune séance</div>'; return; } c.sessions.slice().reverse().forEach(s=>{ const el = document.createElement('div'); el.className='session'; el.innerHTML = `<div class="d">${s.dateISO}</div><div style="margin-top:10px;white-space:pre-wrap">${escapeHtml(s.text)}</div>`; node.appendChild(el); }); updateProfileLine(); }
-$('btnExportCSV').onclick = ()=> { const d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; } const head = ['nom','prenom','classe','cycle','date','texte','echauffement','created_at']; const rows = (c.sessions||[]).map(s=>[ d.profile.nom, d.profile.prenom, d.profile.classe, c.name, s.dateISO, s.text.replace(/\n/g,' '), (c.warmup||'').replace(/\n/g,' '), s.created_atISO ]); const csv = [head].concat(rows).map(r=> r.map(v=> '"'+String(v||'').replace(/"/g,'""') + '"').join(';')).join('\n'); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); };
-async function exportPDFFile(){ const d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; } const container = document.createElement('div'); container.style.padding='28px'; container.style.width='800px'; container.style.background='#fff'; container.style.fontFamily='Inter,Arial,Helvetica,sans-serif'; container.innerHTML = `<div><h1 style="color:#0066ff;margin:0">${escapeHtml(c.name)} — Carnet</h1><div style="margin-top:6px">Élève : <strong>${escapeHtml(d.profile.nom||'')} ${escapeHtml(d.profile.prenom||'')}</strong> — Classe : <strong>${escapeHtml(d.profile.classe||'')}</strong></div><div style="height:12px"></div>`; if(c.warmup){ container.innerHTML += `<div style="margin-bottom:12px"><strong>Échauffement type :</strong><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(c.warmup)}</div></div>`; } (c.sessions||[]).forEach(s=>{ container.innerHTML += `<div style="margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #eee"><div style="font-weight:800;color:#0066ff">${escapeHtml(s.dateISO)}</div><div style="white-space:pre-wrap;margin-top:8px">${escapeHtml(s.text)}</div></div>`; }); container.innerHTML += `<div style="margin-top:18px;color:#6b7280;font-size:0.9rem">Généré par ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</div>`; document.body.appendChild(container); try{ const canvas = await html2canvas(container, { scale:2 }); const imgData = canvas.toDataURL('image/png'); const { jsPDF } = window.jspdf; const pdf = new jsPDF({ unit:'pt', format:'a4' }); const pageWidth = pdf.internal.pageSize.getWidth(); const imgProps = { width: canvas.width, height: canvas.height }; const ratio = imgProps.width / pageWidth; const imgHeightPt = imgProps.height / ratio; pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeightPt); const blob = pdf.output('blob'); const filename = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.pdf`; const file = new File([blob], filename, { type:'application/pdf' }); if(navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files:[file], title: filename, text: 'Carnet ScanCarnet' }); } else { const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); alert('PDF généré et téléchargé (tu peux l\'envoyer par AirDrop ou mail)'); } }catch(err){ console.error(err); alert('Erreur lors de la génération du PDF: '+err.message); } finally{ container.remove(); } } $('btnExportPDF').onclick = exportPDFFile; $('btnResetTop').onclick = ()=> { if(!confirm('Confirmer : supprimer toutes les données locales ?')) return; localStorage.removeItem(STORAGE_KEY); DB = defaultDB(); saveDB(DB); location.reload(); }; $('btnReset').onclick = ()=> { if(!confirm('Confirmer : supprimer toutes les données locales ?')) return; localStorage.removeItem(STORAGE_KEY); DB = defaultDB(); saveDB(DB); location.reload(); }; $('btnHelp').onclick = ()=> $('modalHelp').style.display='flex'; $('closeHelp').onclick = ()=> $('modalHelp').style.display='none'; function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); } (function init(){ $('nom').value = DB.profile.nom || ''; $('prenom').value = DB.profile.prenom || ''; $('classe').value = DB.profile.classe || ''; updateProfileLine(); })(); </script>
+
+function hideAll(){ ['panel-splash','panel-profile','panel-dashboard','panel-cycle','panel-warmup','panel-newsession','panel-list'].forEach(id=>{ const el=$(id); if(el) el.classList.add('hidden'); }); }
+function showPanel(id){ hideAll(); const el=$(id); if(el) el.classList.remove('hidden'); }
+
+function updateProfileLine(){ const p = DB.profile || {}; const line = `${p.nom||'—'} ${p.prenom||''} — ${p.classe||''}`; const el = $('profileLine'); if(el) el.textContent = line; }
+
+// safe event attachments after DOM loaded
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Splash buttons
+  const btnStart = $('btnStart'); if(btnStart) btnStart.addEventListener('click', ()=> showPanel('panel-profile'));
+
+  const btnHelp = $('btnHelp'); if(btnHelp) btnHelp.addEventListener('click', ()=> { const m=$('modalHelp'); if(m){ m.style.display='flex'; m.classList.remove('hidden'); } });
+  const closeHelp = $('closeHelp'); if(closeHelp) closeHelp.addEventListener('click', ()=> { const m=$('modalHelp'); if(m){ m.style.display='none'; m.classList.add('hidden'); } });
+  const btnResetTop = $('btnResetTop'); if(btnResetTop) btnResetTop.addEventListener('click', ()=> { if(confirm('Confirmer : supprimer toutes les données locales ?')){ localStorage.removeItem(STORAGE_KEY); DB=defaultDB(); saveDB(DB); location.reload(); } });
+
+  // Profile actions
+  const saveProfile = $('saveProfile'); if(saveProfile) saveProfile.addEventListener('click', ()=>{
+    const d = getDB(); d.profile.nom = ($('nom')?.value||'').trim(); d.profile.prenom = ($('prenom')?.value||'').trim(); d.profile.classe = ($('classe')?.value||'').trim(); setDB(d); updateProfileLine(); alert('Profil enregistré'); showPanel('panel-dashboard');
+  });
+  const backToSplash = $('backToSplash'); if(backToSplash) backToSplash.addEventListener('click', ()=> showPanel('panel-splash'));
+
+  // Dashboard main buttons
+  const btnCycle = $('btnCycle'); if(btnCycle) btnCycle.addEventListener('click', ()=> { renderCycles(); showPanel('panel-cycle'); });
+  const btnWarmup = $('btnWarmup'); if(btnWarmup) btnWarmup.addEventListener('click', ()=> {
+    const c = DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert('Sélectionne ou crée d\'abord un cycle'); renderCycles(); showPanel('panel-cycle'); return; }
+    $('warmupCycleName').textContent = c.name; $('warmText').value = c.warmup||''; showPanel('panel-warmup');
+  });
+  const btnNew = $('btnNew'); if(btnNew) btnNew.addEventListener('click', ()=> {
+    const c = DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert('Sélectionne ou crée d\'abord un cycle'); renderCycles(); showPanel('panel-cycle'); return; }
+    $('sessionText').value=''; showPanel('panel-newsession');
+  });
+  const btnList = $('btnList'); if(btnList) btnList.addEventListener('click', ()=> { renderSessions(); showPanel('panel-list'); });
+
+  // Cycle create/select
+  const createCycle = $('createCycle'); if(createCycle) createCycle.addEventListener('click', ()=> {
+    const name = ($('cycleName')?.value||'').trim(); if(!name){ alert('Donne un nom au cycle'); return; }
+    let d = getDB(); let c = d.cycles.find(x=>x.name.toLowerCase()===name.toLowerCase()); if(!c){ c={id:nid(), name, warmup:'', sessions:[]}; d.cycles.push(c); } d.selected = c.id; setDB(d); renderCycles(); alert('Cycle sélectionné : '+c.name); showPanel('panel-dashboard');
+  });
+  const cycleBack = $('cycleBack'); if(cycleBack) cycleBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
+
+  // Warmup
+  const saveWarm = $('saveWarm'); if(saveWarm) saveWarm.addEventListener('click', ()=> { let d=getDB(); const c=d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Aucun cycle'); return; } c.warmup = ($('warmText')?.value||''); setDB(d); alert('Échauffement enregistré'); showPanel('panel-dashboard'); });
+  const warmBack = $('warmBack'); if(warmBack) warmBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
+
+  // New session
+  const saveSession = $('saveSession'); if(saveSession) saveSession.addEventListener('click', ()=> {
+    const txt = ($('sessionText')?.value||'').trim(); if(!txt){ alert('Écris quelque chose'); return; }
+    let d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Aucun cycle sélectionné'); return; }
+    const date = todayLux(); const now = new Date().toISOString(); const s={id:nid(), dateISO:date, text:txt, created_atISO:now}; c.sessions = c.sessions||[]; c.sessions.push(s); setDB(d); $('sessionText').value=''; alert('Séance enregistrée ('+date+')'); showPanel('panel-dashboard');
+  });
+  const sessionBack = $('sessionBack'); if(sessionBack) sessionBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
+
+  // List back
+  const listBack = $('listBack'); if(listBack) listBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
+
+  // Exports: CSV and PDF (include warmup)
+  const btnExportCSV = $('btnExportCSV'); if(btnExportCSV) btnExportCSV.addEventListener('click', ()=> {
+    const d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; }
+    const head = ['nom','prenom','classe','cycle','date','texte','echauffement','created_at'];
+    const rows = (c.sessions||[]).map(s=>[ d.profile.nom, d.profile.prenom, d.profile.classe, c.name, s.dateISO, s.text.replace(/\n/g,' '), (c.warmup||'').replace(/\n/g,' '), s.created_atISO ]);
+    const csv = [head].concat(rows).map(r=> r.map(v=> '"'+String(v||'').replace(/"/g,'""') + '"').join(';')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' }); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  });
+
+  const btnExportPDF = $('btnExportPDF'); if(btnExportPDF) btnExportPDF.addEventListener('click', async ()=> {
+    const d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; }
+    const container = document.createElement('div'); container.style.padding='28px'; container.style.width='800px'; container.style.background='#fff'; container.style.fontFamily='Inter,Arial,Helvetica,sans-serif';
+    container.innerHTML = `<div><h1 style="color:#0066ff;margin:0">${escapeHtml(c.name)} — Carnet</h1><div style="margin-top:6px">Élève : <strong>${escapeHtml(d.profile.nom||'')} ${escapeHtml(d.profile.prenom||'')}</strong> — Classe : <strong>${escapeHtml(d.profile.classe||'')}</strong></div><div style="height:12px"></div>`;
+    if(c.warmup){ container.innerHTML += `<div style="margin-bottom:12px"><strong>Échauffement type :</strong><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(c.warmup)}</div></div>`; }
+    (c.sessions||[]).forEach(s=>{ container.innerHTML += `<div style="margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #eee"><div style="font-weight:800;color:#0066ff">${escapeHtml(s.dateISO)}</div><div style="white-space:pre-wrap;margin-top:8px">${escapeHtml(s.text)}</div></div>`; });
+    container.innerHTML += `<div style="margin-top:18px;color:#6b7280;font-size:0.9rem">Généré par ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</div></div>`;
+    document.body.appendChild(container);
+    try{ const canvas = await html2canvas(container, { scale:2 }); const imgData = canvas.toDataURL('image/png'); const { jsPDF } = window.jspdf; const pdf = new jsPDF({ unit:'pt', format:'a4' }); const pageWidth = pdf.internal.pageSize.getWidth(); const imgProps = { width: canvas.width, height: canvas.height }; const ratio = imgProps.width / pageWidth; const imgHeightPt = imgProps.height / ratio; pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeightPt); const blob = pdf.output('blob'); const filename = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.pdf`; const file = new File([blob], filename, { type:'application/pdf' }); if(navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files:[file], title: filename, text: 'Carnet ScanCarnet' }); } else { const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); alert('PDF généré et téléchargé (tu peux l\'envoyer par AirDrop ou mail)'); } }catch(err){ console.error(err); alert('Erreur lors de la génération du PDF: '+err.message); } finally{ container.remove(); }
+  });
+
+  // Cycle list rendering
+  function renderCycles(){ const node=$('cycleList'); node.innerHTML=''; const d=getDB(); if(!d.cycles.length){ node.innerHTML='<div class="small">Aucun cycle</div>'; return; } d.cycles.forEach(c=>{ const el=document.createElement('div'); el.style.padding='8px'; el.style.borderBottom='1px solid #f1f7ff'; el.innerHTML = `<strong>${c.name}</strong> <span style="color:var(--muted)">(${(c.sessions||[]).length} séances)</span> <div style="margin-top:8px"><button class="ghost" data-id="${c.id}">Sélectionner</button></div>`; node.appendChild(el); el.querySelector('button').addEventListener('click', (e)=>{ const id=e.currentTarget.dataset.id; let dd=getDB(); dd.selected = id; setDB(dd); alert('Cycle sélectionné'); showPanel('panel-dashboard'); }); }); updateProfileLine(); }
+
+  // Other buttons
+  const cycleBack = $('cycleBack'); if(cycleBack) cycleBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
+  const warmBack = $('warmBack'); if(warmBack) warmBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
+  const sessionBack = $('sessionBack'); if(sessionBack) sessionBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
+  const listBack = $('listBack'); if(listBack) listBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
+
+  // Reset bottom (in case present) - provide safety both places
+  const btnReset = $('btnReset'); if(btnReset) btnReset.addEventListener('click', ()=> { if(confirm('Confirmer : supprimer toutes les données locales ?')){ localStorage.removeItem(STORAGE_KEY); DB=defaultDB(); saveDB(DB); location.reload(); } });
+
+  // Initialize profile fields
+  $('nom').value = DB.profile.nom || ''; $('prenom').value = DB.profile.prenom || ''; $('classe').value = DB.profile.classe || '';
+  updateProfileLine();
+}); // end DOMContentLoaded
+
+// small helper
+function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
 </body>
 </html>

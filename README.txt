@@ -1,1 +1,1 @@
-ScanCarnet v6 - export JSON removed; CSV + PDF include warmup; updated design and layout.
+ScanCarnet v7 - simplified splash and fixed Start button; includes CSV + PDF exports.
