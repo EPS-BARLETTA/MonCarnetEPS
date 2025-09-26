@@ -1,0 +1,52 @@
+// Apps Script doPost to receive carnet payload and write to Google Sheet
+const SECRET_TOKEN = 'CHANGE_THIS_TOKEN';
+
+function doPost(e) {
+  try {
+    const payload = JSON.parse(e.postData.contents || "{}");
+    if (!payload._token || payload._token !== SECRET_TOKEN) {
+      return ContentService.createTextOutput(JSON.stringify({ ok:false, error:"bad_token" }))
+                            .setMimeType(ContentService.MimeType.JSON);
+    }
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName("Carnets") || ss.insertSheet("Carnets");
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        "received_at_ISO", "student_nom", "student_prenom", "classe",
+        "cycle_name", "client_dateISO", "session_count", "active_days",
+        "sessions_JSON", "notes"
+      ]);
+    }
+    const receivedAt = new Date();
+    const row = [
+      receivedAt.toISOString(),
+      payload.nom || "",
+      payload.prenom || "",
+      payload.classe || "",
+      payload.cycle || "",
+      payload.client_dateISO || "",
+      payload.session_count || "",
+      (payload.active_days || []).join("|"),
+      JSON.stringify(payload.sessions || []),
+      payload.notes || ""
+    ];
+    sheet.appendRow(row);
+    const teacherEmail = payload.teacher_email || "";
+    if (teacherEmail) {
+      MailApp.sendEmail({
+        to: teacherEmail,
+        subject: `Carnet reçu — ${payload.nom} ${payload.prenom} — ${payload.classe}`,
+        body: `Carnet pour ${payload.nom} ${payload.prenom} reçu le ${receivedAt.toISOString()}.
+Sessions: ${ (payload.sessions||[]).length }.
+
+---
+Ce message est envoyé automatiquement.`
+      });
+    }
+    return ContentService.createTextOutput(JSON.stringify({ ok:true }))
+                         .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ ok:false, error: err.toString() }))
+                         .setMimeType(ContentService.MimeType.JSON);
+  }
+}
