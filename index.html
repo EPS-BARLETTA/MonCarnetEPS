@@ -1,57 +1,58 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ScanCarnet</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ScanCarnet — Carnet d'entraînement</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#f7fbff; --panel:#ffffff; --primary:#0066ff; --muted:#6b7280;
-    --radius:14px; --shadow:0 12px 30px rgba(11,35,88,0.08);
+    --bg:#f7fbff;
+    --panel:#ffffff;
+    --primary:#0066ff;
+    --accent1:#ff7a7a;
+    --accent2:#6b8bff;
+    --muted:#6b7280;
+    --radius:14px;
+    --shadow:0 12px 30px rgba(11,35,88,0.08);
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,system-ui,Roboto,Arial;background:linear-gradient(180deg,#f7fbff,#fff);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;color:#062030}
-  .app{width:100%;max-width:920px}
+  body{margin:0;font-family:Inter,system-ui,Roboto,Arial;background:linear-gradient(180deg,#f7fbff,#ffffff);color:#062030;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
+  .app{width:100%;max-width:900px}
   .card{background:var(--panel);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);text-align:center}
   .logo{width:84px;height:84px;border-radius:18px;background:linear-gradient(135deg,#007bff,#00c6ff);display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:28px;margin:0 auto 12px}
   h1{margin:6px 0 0 0;font-size:28px}
   .subtitle{color:var(--muted);margin-top:6px}
   .bigbtn{min-width:260px;padding:14px 18px;border-radius:12px;border:0;font-weight:800;font-size:1.05rem;color:white;cursor:pointer;background:linear-gradient(90deg,#34c759,#00d4a6);box-shadow:0 8px 20px rgba(10,88,255,0.12);}
-  .smallbtn{margin-top:12px;background:#fff;border:1px solid rgba(0,0,0,0.06);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer;font-weight:600}
-  .ghost{background:#fff;color:var(--primary);border:1px solid rgba(0,102,255,0.08);padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:600}
-  .hidden{display:none}
-  .exports{position:fixed;right:18px;bottom:18px;background:linear-gradient(135deg,#001d6e,#0047b3);color:white;padding:12px;border-radius:12px;display:flex;gap:8px;align-items:center;z-index:90}
+  .smallbtn{margin-top:12px;background:#fff;border:1px solid rgba(0,0,0,0.06);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
+  .exports{position:fixed;right:20px;bottom:20px;background:linear-gradient(135deg,#001d6e,#0047b3);color:white;padding:12px;border-radius:12px;display:flex;gap:8px;align-items:center;box-shadow:0 12px 30px rgba(2,6,23,0.28);z-index:90}
   .exports button{background:transparent;border:1px solid rgba(255,255,255,0.12);color:white;padding:8px 10px;border-radius:10px;font-weight:700;cursor:pointer}
   .csv{background:linear-gradient(90deg,#ffbf00,#ff7a00);border:none;padding:10px 12px;border-radius:10px}
   .pdf{background:linear-gradient(90deg,#ec4899,#8b5cf6);border:none;padding:10px 12px;border-radius:10px}
-  input,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #eef6ff;font-size:1rem;margin-top:8px}
-  textarea{min-height:120px;white-space:pre-wrap}
-  .center-col{display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center}
+  .helpreset{display:flex;gap:8px;justify-content:center;margin-top:10px}
+  .ghost{background:#fff;color:var(--primary);border:1px solid rgba(0,102,255,0.08);padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:600}
   footer{margin-top:18px;text-align:center;color:var(--muted);font-size:0.9rem}
+  .hidden{display:none}
   @media (max-width:720px){ .bigbtn{min-width:200px} .exports{right:12px;bottom:12px} }
 </style>
 </head>
 <body>
   <div class="app">
-    <!-- Splash -- simplified -->
+    <!-- Simplified splash: only logo, title, start button; help & reset small underneath -->
     <div class="card" id="panel-splash">
       <div class="logo">SC</div>
       <h1>ScanCarnet</h1>
-      <div class="subtitle">Carnet d'entraînement</div>
+      <div class="subtitle">Carnet d'entraînement — Équipe EPS Lycée Vauban — LUXEMBOURG</div>
       <div style="height:14px"></div>
       <button id="btnStart" class="bigbtn">Démarrer</button>
-      <div style="height:8px"></div>
-      <div class="center-col">
-        <div style="display:flex;gap:10px">
-          <button id="btnHelp" class="ghost" style="font-size:0.9rem;padding:6px 10px">Aide</button>
-          <button id="btnResetTop" class="ghost" style="font-size:0.9rem;padding:6px 10px">Réinitialiser</button>
-        </div>
+      <div class="helpreset">
+        <button id="btnHelp" class="ghost" style="font-size:0.9rem;padding:6px 8px">Aide</button>
+        <button id="btnResetTop" class="ghost" style="font-size:0.9rem;padding:6px 8px">Réinitialiser</button>
       </div>
     </div>
 
-    <!-- Profile -->
-    <div class="card hidden" id="panel-profile">
+    <!-- Profile (hidden initially) -->
+    <div class="card hidden" id="panel-profile" style="display:none">
       <h2>Profil élève</h2>
       <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
         <input id="nom" placeholder="Nom" style="width:28%"/>
@@ -65,9 +66,10 @@
     </div>
 
     <!-- Dashboard -->
-    <div class="card hidden" id="panel-dashboard">
+    <div class="card hidden" id="panel-dashboard" style="display:none">
       <h2 id="profileLine">—</h2>
       <div class="subtitle" style="margin-bottom:12px">Ton carnet — actions</div>
+
       <div style="display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center">
         <button id="btnCycle" class="bigbtn" style="background:linear-gradient(90deg,#007bff,#0096ff)">Cycle</button>
         <button id="btnWarmup" class="bigbtn" style="background:linear-gradient(90deg,#ff7a7a,#ffb86b)">Échauffement</button>
@@ -76,38 +78,38 @@
       </div>
     </div>
 
-    <!-- Minimal cycle/warmup/new/list panels (same behaviour) -->
-    <div class="card hidden" id="panel-cycle">
+    <!-- Cycle / Warmup / New session / List hidden panels (kept minimal) -->
+    <div class="card hidden" id="panel-cycle" style="display:none">
       <h3>Cycle (APSA)</h3>
-      <input id="cycleName" placeholder="Ex : Badminton" />
+      <input id="cycleName" placeholder="Ex : Badminton" style="width:66%"/>
       <div style="height:8px"></div>
-      <button id="createCycle" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,#007bff,#0096ff)">Créer / Sélectionner</button>
+      <button id="createCycle" class="bigbtn" style="background:linear-gradient(90deg,#007bff,#0096ff);min-width:200px">Créer / Sélectionner</button>
       <div id="cycleList" style="margin-top:12px;text-align:left"></div>
       <div style="height:8px"></div>
       <button id="cycleBack" class="smallbtn">Retour</button>
     </div>
 
-    <div class="card hidden" id="panel-warmup">
+    <div class="card hidden" id="panel-warmup" style="display:none">
       <h3>Échauffement (lié au cycle)</h3>
       <div id="warmupCycleName" class="subtitle">—</div>
-      <textarea id="warmText" placeholder="- Footing 8 min"></textarea>
-      <div style="height:8px"></div>
-      <button id="saveWarm" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,#ff7a7a,#ffb86b)">Enregistrer</button>
+      <textarea id="warmText" placeholder="- Footing 8 min" style="width:100%;margin-top:10px"></textarea>
+      <div style="height:10px"></div>
+      <button id="saveWarm" class="bigbtn" style="background:linear-gradient(90deg,#ff7a7a,#ffb86b);min-width:200px">Enregistrer</button>
       <div style="height:8px"></div>
       <button id="warmBack" class="smallbtn">Retour</button>
     </div>
 
-    <div class="card hidden" id="panel-newsession">
+    <div class="card hidden" id="panel-newsession" style="display:none">
       <h3>Nouvelle séance</h3>
-      <div class="subtitle">Date ajoutée automatiquement (Europe/Luxembourg).</div>
-      <textarea id="sessionText" placeholder="Décris la séance..."></textarea>
-      <div style="height:8px"></div>
-      <button id="saveSession" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,#34c759,#00d4a6)">Enregistrer séance</button>
+      <div class="subtitle">La date est ajoutée automatiquement (Europe/Luxembourg).</div>
+      <textarea id="sessionText" placeholder="Décris la séance..." style="width:100%;margin-top:10px"></textarea>
+      <div style="height:10px"></div>
+      <button id="saveSession" class="bigbtn" style="background:linear-gradient(90deg,#34c759,#00d4a6);min-width:200px">Enregistrer séance</button>
       <div style="height:8px"></div>
       <button id="sessionBack" class="smallbtn">Retour</button>
     </div>
 
-    <div class="card hidden" id="panel-list">
+    <div class="card hidden" id="panel-list" style="display:none">
       <h3>Séances archivées</h3>
       <div id="sessionsContainer" style="margin-top:12px;text-align:left"></div>
       <div style="height:8px"></div>
@@ -117,19 +119,19 @@
     <footer>ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</footer>
   </div>
 
-  <!-- Export floating box (CSV / PDF) -->
+  <!-- export panel (unchanged) -->
   <div class="exports" role="dialog" aria-label="Exports">
     <button class="csv" id="btnExportCSV">Exporter CSV</button>
     <button class="pdf" id="btnExportPDF">Générer PDF</button>
   </div>
 
-  <!-- Help modal -->
-  <div id="modalHelp" class="hidden" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(3,7,18,0.45);z-index:100;padding:20px">
-    <div style="background:#fff;padding:18px;border-radius:12px;max-width:720px;box-shadow:0 10px 30px rgba(0,0,0,0.12);text-align:left">
+  <!-- help modal -->
+  <div id="modalHelp" class="modal hidden" style="display:none">
+    <div class="card" style="max-width:720px">
       <div style="display:flex;justify-content:space-between;align-items:center"><strong>Aide — ScanCarnet</strong><button id="closeHelp" class="ghost">Fermer</button></div>
       <div style="height:8px"></div>
-      <ol style="padding-left:18px">
-        <li>Démarrer → Remplis ton profil.</li>
+      <ol style="padding-left:18px;text-align:left">
+        <li>Appuie sur <strong>Démarrer</strong> puis remplis ton profil.</li>
         <li>Créer / sélectionner un cycle (ex : Badminton).</li>
         <li>Ajouter un échauffement type si tu veux.</li>
         <li>Nouvelle séance → écrire → Enregistrer (date figée).</li>
@@ -140,147 +142,114 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <script>
-/* --- storage/helpers --- */
-const STORAGE_KEY = 'scancarnet_fixed_v1';
+// Fixed and simplified JavaScript wiring to avoid earlier JS errors that could block buttons
 const $ = id => document.getElementById(id);
-function loadDB(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); }catch(e){ return {}; } }
+const STORAGE_KEY = 'scancarnet_v7';
+
+function loadDB(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }catch(e){ return {}; } }
 function saveDB(db){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
 function defaultDB(){ return { profile:{nom:'',prenom:'',classe:''}, cycles:[], selected:null }; }
-function getDB(){ let d=loadDB(); if(!d || !d.profile){ d=defaultDB(); saveDB(d);} return d; }
-function setDB(d){ saveDB(d); DB=d; }
+function getDB(){ let d = loadDB(); if(!d || !d.profile){ d = defaultDB(); saveDB(d); } return d; }
+function setDB(d){ saveDB(d); DB = d; }
+
 function nid(){ return Math.random().toString(36).slice(2,9); }
-function todayLux(){ try{ return new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Luxembourg'}); }catch(e){ return new Date().toISOString().slice(0,10);} }
+function todayLux(){ try{ return new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Luxembourg'}); }catch(e){ return new Date().toISOString().slice(0,10); } }
 
 let DB = getDB();
 
-/* --- UI helpers --- */
 function hideAll(){ ['panel-splash','panel-profile','panel-dashboard','panel-cycle','panel-warmup','panel-newsession','panel-list'].forEach(id=>{ const el=$(id); if(el) el.classList.add('hidden'); }); }
-function showPanel(id){ hideAll(); const el=$(id); if(el){ el.classList.remove('hidden'); } }
-function updateProfileLine(){ const p = DB.profile||{}; const el=$('profileLine'); if(el) el.textContent = `${p.nom||'—'} ${p.prenom||''} — ${p.classe||''}`; }
+function showPanel(id){ hideAll(); const el=$(id); if(el) el.classList.remove('hidden'); }
 
-/* --- attach event handlers after DOM ready --- */
-document.addEventListener('DOMContentLoaded', ()=> {
-  // splash
+function updateProfileLine(){ const p = DB.profile || {}; const line = `${p.nom||'—'} ${p.prenom||''} — ${p.classe||''}`; const el = $('profileLine'); if(el) el.textContent = line; }
+
+// safe event attachments after DOM loaded
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Splash buttons
   const btnStart = $('btnStart'); if(btnStart) btnStart.addEventListener('click', ()=> showPanel('panel-profile'));
-  const btnHelp = $('btnHelp'); if(btnHelp) btnHelp.addEventListener('click', ()=> { const m=$('modalHelp'); if(m){ m.style.display='flex'; m.classList.remove('hidden'); }});
-  const closeHelp = $('closeHelp'); if(closeHelp) closeHelp.addEventListener('click', ()=> { const m=$('modalHelp'); if(m){ m.style.display='none'; m.classList.add('hidden'); }});
-  const btnResetTop = $('btnResetTop'); if(btnResetTop) btnResetTop.addEventListener('click', ()=> { if(confirm('Supprimer toutes les données locales ?')){ localStorage.removeItem(STORAGE_KEY); DB=defaultDB(); saveDB(DB); location.reload(); }});
 
-  // profile save
+  const btnHelp = $('btnHelp'); if(btnHelp) btnHelp.addEventListener('click', ()=> { const m=$('modalHelp'); if(m){ m.style.display='flex'; m.classList.remove('hidden'); } });
+  const closeHelp = $('closeHelp'); if(closeHelp) closeHelp.addEventListener('click', ()=> { const m=$('modalHelp'); if(m){ m.style.display='none'; m.classList.add('hidden'); } });
+  const btnResetTop = $('btnResetTop'); if(btnResetTop) btnResetTop.addEventListener('click', ()=> { if(confirm('Confirmer : supprimer toutes les données locales ?')){ localStorage.removeItem(STORAGE_KEY); DB=defaultDB(); saveDB(DB); location.reload(); } });
+
+  // Profile actions
   const saveProfile = $('saveProfile'); if(saveProfile) saveProfile.addEventListener('click', ()=>{
-    const d = getDB();
-    d.profile.nom = ($('nom')?.value || '').trim();
-    d.profile.prenom = ($('prenom')?.value || '').trim();
-    d.profile.classe = ($('classe')?.value || '').trim();
-    setDB(d); updateProfileLine(); alert('Profil enregistré'); showPanel('panel-dashboard');
+    const d = getDB(); d.profile.nom = ($('nom')?.value||'').trim(); d.profile.prenom = ($('prenom')?.value||'').trim(); d.profile.classe = ($('classe')?.value||'').trim(); setDB(d); updateProfileLine(); alert('Profil enregistré'); showPanel('panel-dashboard');
   });
   const backToSplash = $('backToSplash'); if(backToSplash) backToSplash.addEventListener('click', ()=> showPanel('panel-splash'));
 
-  // dashboard actions
+  // Dashboard main buttons
   const btnCycle = $('btnCycle'); if(btnCycle) btnCycle.addEventListener('click', ()=> { renderCycles(); showPanel('panel-cycle'); });
-  const btnWarmup = $('btnWarmup'); if(btnWarmup) btnWarmup.addEventListener('click', ()=> { const c=DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert("Sélectionne ou crée d'abord un cycle"); renderCycles(); showPanel('panel-cycle'); return; } $('warmupCycleName').textContent = c.name; $('warmText').value=c.warmup||''; showPanel('panel-warmup'); });
-  const btnNew = $('btnNew'); if(btnNew) btnNew.addEventListener('click', ()=> { const c=DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert("Sélectionne ou crée d'abord un cycle"); renderCycles(); showPanel('panel-cycle'); return; } $('sessionText').value=''; showPanel('panel-newsession'); });
+  const btnWarmup = $('btnWarmup'); if(btnWarmup) btnWarmup.addEventListener('click', ()=> {
+    const c = DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert('Sélectionne ou crée d\'abord un cycle'); renderCycles(); showPanel('panel-cycle'); return; }
+    $('warmupCycleName').textContent = c.name; $('warmText').value = c.warmup||''; showPanel('panel-warmup');
+  });
+  const btnNew = $('btnNew'); if(btnNew) btnNew.addEventListener('click', ()=> {
+    const c = DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert('Sélectionne ou crée d\'abord un cycle'); renderCycles(); showPanel('panel-cycle'); return; }
+    $('sessionText').value=''; showPanel('panel-newsession');
+  });
   const btnList = $('btnList'); if(btnList) btnList.addEventListener('click', ()=> { renderSessions(); showPanel('panel-list'); });
 
-  // cycle create/select
-  const createCycle = $('createCycle'); if(createCycle) createCycle.addEventListener('click', ()=>{
-    const name = ($('cycleName')?.value || '').trim(); if(!name){ alert('Nom requis'); return; }
-    let d = getDB(); let c = d.cycles.find(x=>x.name.toLowerCase()===name.toLowerCase());
-    if(!c){ c={id:nid(), name, warmup:'', sessions:[]}; d.cycles.push(c); }
-    d.selected = c.id; setDB(d); renderCycles(); alert('Cycle sélectionné : '+c.name); showPanel('panel-dashboard');
+  // Cycle create/select
+  const createCycle = $('createCycle'); if(createCycle) createCycle.addEventListener('click', ()=> {
+    const name = ($('cycleName')?.value||'').trim(); if(!name){ alert('Donne un nom au cycle'); return; }
+    let d = getDB(); let c = d.cycles.find(x=>x.name.toLowerCase()===name.toLowerCase()); if(!c){ c={id:nid(), name, warmup:'', sessions:[]}; d.cycles.push(c); } d.selected = c.id; setDB(d); renderCycles(); alert('Cycle sélectionné : '+c.name); showPanel('panel-dashboard');
   });
   const cycleBack = $('cycleBack'); if(cycleBack) cycleBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
 
-  // warmup save
-  const saveWarm = $('saveWarm'); if(saveWarm) saveWarm.addEventListener('click', ()=> {
-    let d=getDB(); const c=d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Aucun cycle'); return; } c.warmup = ($('warmText')?.value || ''); setDB(d); alert('Échauffement enregistré'); showPanel('panel-dashboard');
-  });
+  // Warmup
+  const saveWarm = $('saveWarm'); if(saveWarm) saveWarm.addEventListener('click', ()=> { let d=getDB(); const c=d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Aucun cycle'); return; } c.warmup = ($('warmText')?.value||''); setDB(d); alert('Échauffement enregistré'); showPanel('panel-dashboard'); });
   const warmBack = $('warmBack'); if(warmBack) warmBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
 
-  // new session save
-  const saveSession = $('saveSession'); if(saveSession) saveSession.addEventListener('click', ()=>{
-    const txt = ($('sessionText')?.value || '').trim(); if(!txt){ alert('Écris quelque chose'); return; }
-    let d=getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Aucun cycle sélectionné'); return; }
-    const date = todayLux(); const now = new Date().toISOString(); const s={id:nid(), dateISO:date, text:txt, created_atISO:now};
-    c.sessions = c.sessions||[]; c.sessions.push(s); setDB(d); $('sessionText').value=''; alert('Séance enregistrée ('+date+')'); showPanel('panel-dashboard');
+  // New session
+  const saveSession = $('saveSession'); if(saveSession) saveSession.addEventListener('click', ()=> {
+    const txt = ($('sessionText')?.value||'').trim(); if(!txt){ alert('Écris quelque chose'); return; }
+    let d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Aucun cycle sélectionné'); return; }
+    const date = todayLux(); const now = new Date().toISOString(); const s={id:nid(), dateISO:date, text:txt, created_atISO:now}; c.sessions = c.sessions||[]; c.sessions.push(s); setDB(d); $('sessionText').value=''; alert('Séance enregistrée ('+date+')'); showPanel('panel-dashboard');
   });
+  const sessionBack = $('sessionBack'); if(sessionBack) sessionBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
+
+  // List back
+  const listBack = $('listBack'); if(listBack) listBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
+
+  // Exports: CSV and PDF (include warmup)
+  const btnExportCSV = $('btnExportCSV'); if(btnExportCSV) btnExportCSV.addEventListener('click', ()=> {
+    const d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; }
+    const head = ['nom','prenom','classe','cycle','date','texte','echauffement','created_at'];
+    const rows = (c.sessions||[]).map(s=>[ d.profile.nom, d.profile.prenom, d.profile.classe, c.name, s.dateISO, s.text.replace(/\n/g,' '), (c.warmup||'').replace(/\n/g,' '), s.created_atISO ]);
+    const csv = [head].concat(rows).map(r=> r.map(v=> '"'+String(v||'').replace(/"/g,'""') + '"').join(';')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' }); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  });
+
+  const btnExportPDF = $('btnExportPDF'); if(btnExportPDF) btnExportPDF.addEventListener('click', async ()=> {
+    const d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; }
+    const container = document.createElement('div'); container.style.padding='28px'; container.style.width='800px'; container.style.background='#fff'; container.style.fontFamily='Inter,Arial,Helvetica,sans-serif';
+    container.innerHTML = `<div><h1 style="color:#0066ff;margin:0">${escapeHtml(c.name)} — Carnet</h1><div style="margin-top:6px">Élève : <strong>${escapeHtml(d.profile.nom||'')} ${escapeHtml(d.profile.prenom||'')}</strong> — Classe : <strong>${escapeHtml(d.profile.classe||'')}</strong></div><div style="height:12px"></div>`;
+    if(c.warmup){ container.innerHTML += `<div style="margin-bottom:12px"><strong>Échauffement type :</strong><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(c.warmup)}</div></div>`; }
+    (c.sessions||[]).forEach(s=>{ container.innerHTML += `<div style="margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #eee"><div style="font-weight:800;color:#0066ff">${escapeHtml(s.dateISO)}</div><div style="white-space:pre-wrap;margin-top:8px">${escapeHtml(s.text)}</div></div>`; });
+    container.innerHTML += `<div style="margin-top:18px;color:#6b7280;font-size:0.9rem">Généré par ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</div></div>`;
+    document.body.appendChild(container);
+    try{ const canvas = await html2canvas(container, { scale:2 }); const imgData = canvas.toDataURL('image/png'); const { jsPDF } = window.jspdf; const pdf = new jsPDF({ unit:'pt', format:'a4' }); const pageWidth = pdf.internal.pageSize.getWidth(); const imgProps = { width: canvas.width, height: canvas.height }; const ratio = imgProps.width / pageWidth; const imgHeightPt = imgProps.height / ratio; pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeightPt); const blob = pdf.output('blob'); const filename = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.pdf`; const file = new File([blob], filename, { type:'application/pdf' }); if(navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files:[file], title: filename, text: 'Carnet ScanCarnet' }); } else { const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); alert('PDF généré et téléchargé (tu peux l\'envoyer par AirDrop ou mail)'); } }catch(err){ console.error(err); alert('Erreur lors de la génération du PDF: '+err.message); } finally{ container.remove(); }
+  });
+
+  // Cycle list rendering
+  function renderCycles(){ const node=$('cycleList'); node.innerHTML=''; const d=getDB(); if(!d.cycles.length){ node.innerHTML='<div class="small">Aucun cycle</div>'; return; } d.cycles.forEach(c=>{ const el=document.createElement('div'); el.style.padding='8px'; el.style.borderBottom='1px solid #f1f7ff'; el.innerHTML = `<strong>${c.name}</strong> <span style="color:var(--muted)">(${(c.sessions||[]).length} séances)</span> <div style="margin-top:8px"><button class="ghost" data-id="${c.id}">Sélectionner</button></div>`; node.appendChild(el); el.querySelector('button').addEventListener('click', (e)=>{ const id=e.currentTarget.dataset.id; let dd=getDB(); dd.selected = id; setDB(dd); alert('Cycle sélectionné'); showPanel('panel-dashboard'); }); }); updateProfileLine(); }
+
+  // Other buttons
+  const cycleBack = $('cycleBack'); if(cycleBack) cycleBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
+  const warmBack = $('warmBack'); if(warmBack) warmBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
   const sessionBack = $('sessionBack'); if(sessionBack) sessionBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
   const listBack = $('listBack'); if(listBack) listBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
 
-  // exports (CSV + PDF) include warmup
-  const btnExportCSV = $('btnExportCSV'); if(btnExportCSV) btnExportCSV.addEventListener('click', ()=>{
-    const d=getDB(); const c=d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\\'exporter'); return; }
-    const head=['nom','prenom','classe','cycle','date','texte','echauffement','created_at'];
-    const rows=(c.sessions||[]).map(s=>[ d.profile.nom, d.profile.prenom, d.profile.classe, c.name, s.dateISO, s.text.replace(/\n/g,' '), (c.warmup||'').replace(/\n/g,' '), s.created_atISO ]);
-    const csv=[head].concat(rows).map(r=> r.map(v=>'\"'+String(v||'').replace(/\"/g,'\"\"')+'\"').join(';')).join('\n');
-    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-  });
+  // Reset bottom (in case present) - provide safety both places
+  const btnReset = $('btnReset'); if(btnReset) btnReset.addEventListener('click', ()=> { if(confirm('Confirmer : supprimer toutes les données locales ?')){ localStorage.removeItem(STORAGE_KEY); DB=defaultDB(); saveDB(DB); location.reload(); } });
 
-  const btnExportPDF = $('btnExportPDF'); if(btnExportPDF) btnExportPDF.addEventListener('click', async ()=>{
-    const d=getDB(); const c=d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\\'exporter'); return; }
-    const wrapper=document.createElement('div'); wrapper.style.padding='28px'; wrapper.style.width='800px'; wrapper.style.background='#fff'; wrapper.style.fontFamily='Inter,Arial,Helvetica,sans-serif';
-    wrapper.innerHTML=`<div><h1 style="color:#0066ff;margin:0">${escapeHtml(c.name)} — Carnet</h1><div style="margin-top:6px">Élève : <strong>${escapeHtml(d.profile.nom||'')} ${escapeHtml(d.profile.prenom||'')}</strong> — Classe : <strong>${escapeHtml(d.profile.classe||'')}</strong></div><div style="height:12px"></div>`;
-    if(c.warmup){ wrapper.innerHTML += `<div style="margin-bottom:12px"><strong>Échauffement type :</strong><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(c.warmup)}</div></div>`; }
-    (c.sessions||[]).forEach(s=>{ wrapper.innerHTML += `<div style="margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #eee"><div style="font-weight:800;color:#0066ff">${escapeHtml(s.dateISO)}</div><div style="white-space:pre-wrap;margin-top:8px">${escapeHtml(s.text)}</div></div>`; });
-    wrapper.innerHTML += `<div style="margin-top:18px;color:#6b7280;font-size:0.9rem">Généré par ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</div></div>`;
-    document.body.appendChild(wrapper);
-    try{
-      const canvas = await html2canvas(wrapper, { scale: 2 });
-      const imgData = canvas.toDataURL('image/png');
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ unit:'pt', format:'a4' });
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const ratio = canvas.width / pageWidth;
-      const imgHeightPt = canvas.height / ratio;
-      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeightPt);
-      const blob = pdf.output('blob');
-      const filename = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.pdf`;
-      const file = new File([blob], filename, { type:'application/pdf' });
-      if(navigator.canShare && navigator.canShare({ files: [file] })){
-        await navigator.share({ files:[file], title: filename, text:'Carnet ScanCarnet' });
-      } else {
-        const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-        alert('PDF généré et téléchargé (tu peux l\\'envoyer par AirDrop ou mail).');
-      }
-    }catch(err){ console.error(err); alert('Erreur génération PDF: '+(err.message||err)); }
-    finally{ wrapper.remove(); }
-  });
-
-  // init UI values
-  $('nom').value = DB.profile.nom || '';
-  $('prenom').value = DB.profile.prenom || '';
-  $('classe').value = DB.profile.classe || '';
+  // Initialize profile fields
+  $('nom').value = DB.profile.nom || ''; $('prenom').value = DB.profile.prenom || ''; $('classe').value = DB.profile.classe || '';
   updateProfileLine();
 }); // end DOMContentLoaded
 
-// small utilities outside DOMContentLoaded (safe)
-function renderCycles(){
-  const node = document.getElementById('cycleList'); if(!node) return;
-  node.innerHTML = '';
-  const d = getDB(); if(!d.cycles || d.cycles.length===0){ node.innerHTML = '<div style="color:#6b7280">Aucun cycle</div>'; return; }
-  d.cycles.forEach(c=>{
-    const el = document.createElement('div'); el.style.padding='8px'; el.style.borderBottom='1px solid #f1f7ff';
-    el.innerHTML = `<strong>${c.name}</strong> <span style="color:#6b7280">(${(c.sessions||[]).length} séances)</span> <div style="margin-top:8px"><button class="ghost" data-id="${c.id}">Sélectionner</button></div>`;
-    node.appendChild(el);
-    const btn = el.querySelector('button');
-    btn.addEventListener('click', (e)=>{ const id = e.currentTarget.dataset.id; let dd = getDB(); dd.selected = id; setDB(dd); alert('Cycle sélectionné'); showPanel('panel-dashboard'); });
-  });
-  updateProfileLine();
-}
-
-function renderSessions(){
-  const node = document.getElementById('sessionsContainer'); if(!node) return; node.innerHTML='';
-  const d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ node.innerHTML='<div style="color:#6b7280">Aucun cycle sélectionné</div>'; return; }
-  if(!(c.sessions||[]).length){ node.innerHTML='<div style="color:#6b7280">Aucune séance</div>'; return; }
-  c.sessions.slice().reverse().forEach(s=>{
-    const el = document.createElement('div'); el.style.marginBottom='12px'; el.innerHTML = `<div style="font-weight:800;color:#0066ff">${s.dateISO}</div><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(s.text)}</div>`;
-    node.appendChild(el);
-  });
-  updateProfileLine();
-}
-
+// small helper
 function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 </script>
 </body>
