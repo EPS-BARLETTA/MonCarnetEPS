@@ -1,18 +1,11 @@
-ScanCarnet v4 - ZIP prêt pour GitHub
+ScanCarnet v5 - ZIP prêt pour GitHub
 
 Nouveautés :
-- Export CSV (séparateur ;) lisible dans Excel (FR)
-- Export PDF via impression (ouvre une fenêtre imprimable ; choisir "Enregistrer en PDF")
-- Export JSON (sauvegarde brute)
-- Bouton Réinitialiser (vide le stockage local)
-- Aide intégrée (modal) expliquant l'usage
-- Interface centrée et design amélioré
-
-Fichiers :
-- index.html
-- sw.js
-- manifest.webmanifest
-- README.txt
+- Génération réelle de fichier PDF (.pdf) utilisable pour AirDrop ou envoi par mail.
+  - Utilise html2canvas + jsPDF pour créer un PDF, puis propose partage si possible.
+- Design professionnel amélioré : couleurs, typographie, boutons plus visibles.
+- Conserves les fonctions : Export CSV, JSON, Reset, Aide modal.
+- Les fichiers : index.html, sw.js, manifest.webmanifest, README.txt
 
 Déploiement :
 1) Dézippe et copie ces fichiers dans la racine de ton repo GitHub.
