@@ -6,351 +6,218 @@
 <title>ScanCarnet — Carnet d'entraînement</title>
 <style>
   :root{--bg:#f6f7fb;--card:#fff;--accent:#0b73ff;--muted:#6b7280}
-  body{margin:0;font-family:system-ui,Segoe UI,Roboto,Arial;background:var(--bg);color:#111;display:flex;flex-direction:column;min-height:100vh}
-  .container{max-width:900px;margin:18px auto;padding:12px;width:calc(100% - 36px)}
-  header{display:flex;align-items:center;gap:12px}
-  h1{margin:0;font-size:1.3rem}
-  .card{background:var(--card);border-radius:10px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:12px}
-  button{background:var(--accent);color:#fff;border:none;padding:10px 12px;border-radius:8px;cursor:pointer}
+  body{margin:0;font-family:system-ui,Roboto,Arial;background:var(--bg);color:#111}
+  .container{max-width:900px;margin:18px auto;padding:12px}
+  .card{background:var(--card);border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+  button{background:var(--accent);color:#fff;border:none;padding:10px;border-radius:8px;cursor:pointer}
+  .smallbtn{background:#fff;color:var(--accent);border:1px solid var(--accent);padding:8px}
+  input,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #e6e9ef}
+  textarea{min-height:140px;white-space:pre-wrap}
   .muted{color:var(--muted);font-size:0.95rem}
-  input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ef;font-size:1rem;box-sizing:border-box}
-  textarea{min-height:160px;resize:vertical;white-space:pre-wrap}
-  .row{display:flex;gap:8px;flex-wrap:wrap}
-  .smallbtn{background:#fff;color:var(--accent);border:1px solid var(--accent)}
-  .linklike{background:transparent;border:0;color:var(--accent);cursor:pointer;padding:0;font-weight:600}
-  table{width:100%;border-collapse:collapse}
-  td,th{padding:8px;border-bottom:1px solid #f0f2f5;text-align:left}
-  footer{margin-top:auto;padding:12px;text-align:center;color:var(--muted);font-size:0.95rem}
   .hidden{display:none}
 </style>
 </head>
 <body>
 <div class="container">
 
-  <!-- SPLASH -->
-  <div id="page-splash" class="card">
-    <header>
-      <div style="width:48px;height:48px;background:var(--accent);border-radius:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">SC</div>
-      <div>
-        <h1>ScanCarnet</h1>
-        <div class="muted">Carnet d'entraînement — Équipe EPS Lycée Vauban</div>
-      </div>
-    </header>
-    <div style="height:14px"></div>
-    <div class="card" style="text-align:center">
-      <h2 style="margin:0 0 6px 0">Bienvenue</h2>
-      <div class="muted" style="margin-bottom:12px">Appuie sur Démarrer pour créer ton profil et commencer ton carnet.</div>
-      <button id="btnStart">Démarrer</button>
-    </div>
+  <div id="splash" class="card">
+    <h1>ScanCarnet</h1>
+    <div class="muted">Carnet d'entraînement — Équipe EPS Lycée Vauban</div>
+    <div style="height:12px"></div>
+    <button id="startBtn">Démarrer</button>
   </div>
 
-  <!-- PROFILE -->
-  <div id="page-profile" class="card hidden">
-    <h2>Profil élève</h2>
+  <div id="profile" class="card hidden">
+    <h2>Profil</h2>
     <label>Nom</label><input id="nom" placeholder="Nom"/>
     <label>Prénom</label><input id="prenom" placeholder="Prénom"/>
     <label>Classe</label><input id="classe" placeholder="Ex: Terminale A"/>
     <div style="height:10px"></div>
-    <div class="row">
-      <button id="btnSaveProfile">Sauvegarder profil</button>
-      <button id="btnBackToSplash" class="smallbtn">Retour</button>
-    </div>
+    <button id="saveProfile">Sauvegarder</button>
+    <button id="backSplash" class="smallbtn">Retour</button>
   </div>
 
-  <!-- DASHBOARD -->
-  <div id="page-dashboard" class="card hidden">
+  <div id="dashboard" class="card hidden">
     <h2>Tableau de bord</h2>
-    <div class="muted">Profil : <span id="profileLine"></span></div>
-    <div style="height:12px"></div>
-    <div class="row">
-      <button id="btnCycle">Cycle</button>
-      <button id="btnWarmup">Échauffement</button>
-      <button id="btnNewSession">Nouvelle séance</button>
-      <button id="btnViewSessions" class="smallbtn">Voir séances</button>
-      <button id="btnExport" class="smallbtn">Exporter JSON</button>
-    </div>
+    <div class="muted">Profil : <span id="profileLine">—</span></div>
+    <div style="height:10px"></div>
+    <button id="btnCycle">Cycle</button>
+    <button id="btnWarmup">Échauffement</button>
+    <button id="btnNew">Nouvelle séance</button>
+    <button id="btnList" class="smallbtn">Voir séances</button>
+    <button id="btnExport" class="smallbtn">Exporter JSON</button>
   </div>
 
-  <!-- CYCLE SELECT / CREATE -->
-  <div id="page-cycle" class="card hidden">
-    <h2>Cycle</h2>
-    <div class="muted">Création / sélection du cycle (ex : Badminton)</div>
-    <div style="height:10px"></div>
-    <label>Nom du cycle</label>
-    <input id="cycleName" placeholder="Ex : Badminton"/>
-    <div style="height:10px"></div>
-    <div class="row">
-      <button id="btnCreateCycle">Créer / Sélectionner</button>
-      <button id="btnCycleBack" class="smallbtn">Retour</button>
-    </div>
-    <div style="height:12px"></div>
-    <div id="cyclesList"></div>
+  <div id="cycle" class="card hidden">
+    <h3>Cycle</h3>
+    <label>Nom du cycle</label><input id="cycleName" placeholder="Ex: Badminton"/>
+    <div style="height:8px"></div>
+    <button id="createCycle">Créer / Sélectionner</button>
+    <button id="cycleBack" class="smallbtn">Retour</button>
+    <div id="cycleList" style="margin-top:12px"></div>
   </div>
 
-  <!-- WARMUP EDIT -->
-  <div id="page-warmup" class="card hidden">
-    <h2>Échauffement (cycle sélectionné)</h2>
-    <div class="muted" id="warmupCycleName"></div>
-    <div style="height:10px"></div>
+  <div id="warmup" class="card hidden">
+    <h3>Échauffement</h3>
+    <div class="muted" id="warmupCycle">—</div>
     <label>Échauffement (multi-lignes)</label>
-    <textarea id="warmupText" placeholder="- Footing 8 min\n- Éducatifs 10 min\n- 4 x 30''/30''"></textarea>
-    <div style="height:10px"></div>
-    <div class="row">
-      <button id="btnSaveWarmup">Enregistrer</button>
-      <button id="btnWarmupBack" class="smallbtn">Retour</button>
-    </div>
+    <textarea id="warmText" placeholder="- Footing 8 min"></textarea>
+    <div style="height:8px"></div>
+    <button id="saveWarm">Enregistrer</button>
+    <button id="warmBack" class="smallbtn">Retour</button>
   </div>
 
-  <!-- NEW SESSION -->
-  <div id="page-newsession" class="card hidden">
-    <h2>Nouvelle séance</h2>
-    <div class="muted">La date sera enregistrée automatiquement selon le fuseau Europe/Luxembourg et ne peut pas être modifiée.</div>
-    <div style="height:10px"></div>
-    <label>Texte de la séance (un seul champ)</label>
+  <div id="newsession" class="card hidden">
+    <h3>Nouvelle séance</h3>
+    <div class="muted">Date enregistrée automatiquement (Europe/Luxembourg)</div>
+    <label>Saisie unique</label>
     <textarea id="sessionText" placeholder="Décris la séance..."></textarea>
-    <div style="height:10px"></div>
-    <div class="row">
-      <button id="btnSaveSession">Enregistrer la séance</button>
-      <button id="btnNewSessionBack" class="smallbtn">Retour</button>
-    </div>
-    <div style="height:10px"></div>
-    <div class="muted">Cycle courant : <span id="currentCycleName">—</span></div>
+    <div style="height:8px"></div>
+    <button id="saveSession">Enregistrer séance</button>
+    <button id="sessionBack" class="smallbtn">Retour</button>
+    <div style="height:8px" class="muted">Cycle : <span id="currentCycle">—</span></div>
   </div>
 
-  <!-- VIEW SESSIONS -->
-  <div id="page-sessions" class="card hidden">
-    <h2>Sessions archivées</h2>
-    <div class="muted">Les séances sont listées du plus récent au plus ancien. La date affichée est figée à l'enregistrement.</div>
-    <div style="height:12px"></div>
-    <div id="sessionsList"></div>
-    <div style="height:10px"></div>
-    <div class="row">
-      <button id="btnSessionsBack" class="smallbtn">Retour</button>
-    </div>
+  <div id="list" class="card hidden">
+    <h3>Séances</h3>
+    <div id="sessionsContainer"></div>
+    <div style="height:8px"></div>
+    <button id="listBack" class="smallbtn">Retour</button>
   </div>
 
 </div>
 
-<footer>ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</footer>
+<footer style="text-align:center;padding:12px;color:#6b7280">ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</footer>
 
 <script>
-/* Simple single-file app (localStorage)
-   - date recorded in Europe/Luxembourg timezone (sv-SE yields YYYY-MM-DD)
-*/
+const $ = id => document.getElementById(id);
+const pages = ['splash','profile','dashboard','cycle','warmup','newsession','list'];
+function show(p){ pages.forEach(x=>$(x).classList.add('hidden')); $(p).classList.remove('hidden'); }
 
-const qs = id => document.getElementById(id);
-const pages = {
-  splash: qs('page-splash'),
-  profile: qs('page-profile'),
-  dashboard: qs('page-dashboard'),
-  cycle: qs('page-cycle'),
-  warmup: qs('page-warmup'),
-  newsession: qs('page-newsession'),
-  sessions: qs('page-sessions')
+const KEY = 'scancarnet_v3';
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } }
+function save(db){ localStorage.setItem(KEY, JSON.stringify(db)); }
+function initDB(){ let d = load(); if(!d.profile) d={profile:{nom:'',prenom:'',classe:''},cycles:[],selected:null}; save(d); return d; }
+
+function nid(){ return Math.random().toString(36).slice(2,8); }
+function todayLux(){ try{return new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Luxembourg'});}catch(e){return new Date().toISOString().slice(0,10);} }
+
+let DB = initDB();
+
+// splash -> profile
+$('startBtn').onclick = ()=> show('profile');
+$('backSplash').onclick = ()=> show('splash');
+
+// profile save
+$('saveProfile').onclick = ()=>{
+  DB.profile.nom = $('nom').value.trim();
+  DB.profile.prenom = $('prenom').value.trim();
+  DB.profile.classe = $('classe').value.trim();
+  save(DB);
+  updateProfile();
+  show('dashboard');
 };
 
-function showPage(name){
-  Object.values(pages).forEach(p => p.classList.add('hidden'));
-  pages[name].classList.remove('hidden');
+function updateProfile(){
+  $('profileLine').textContent = (DB.profile.nom||'—') + ' ' + (DB.profile.prenom||'') + ' — ' + (DB.profile.classe||'');
+  $('nom').value = DB.profile.nom || '';
+  $('prenom').value = DB.profile.prenom || '';
+  $('classe').value = DB.profile.classe || '';
 }
+updateProfile();
 
-// storage helpers
-const STORAGE_KEY = 'scancarnet_v3';
-function loadDB(){
-  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e){ return {}; }
-}
-function saveDB(db){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
-
-// initial db shape
-function defaultDB(){
-  return {
-    profile: { nom:'', prenom:'', classe:'' },
-    cycles: [], // {id,name,warmup, sessions:[{id,dateISO, text, created_atISO}]}
-    selectedCycleId: null
-  };
-}
-
-function getDB(){
-  const d = loadDB();
-  if(!d || !d.profile) { const def = defaultDB(); saveDB(def); return def; }
-  return d;
-}
-function setDB(db){ saveDB(db); }
-
-// small id
-function nid(){ return Math.random().toString(36).slice(2,9); }
-
-// date in Europe/Luxembourg as YYYY-MM-DD
-function todayLux(){ 
-  try{
-    // using sv-SE locale ensures yyyy-mm-dd formatting; set timezone to Europe/Luxembourg
-    return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Luxembourg' });
-  }catch(e){
-    // fallback to ISO (may differ near midnight)
-    return new Date().toISOString().slice(0,10);
-  }
-}
-
-/* -- UI wiring -- */
-qs('btnStart').onclick = ()=> showPage('profile');
-qs('btnBackToSplash').onclick = ()=> showPage('splash');
-
-qs('btnSaveProfile').onclick = ()=>{
-  const db = getDB();
-  db.profile.nom = qs('nom').value.trim();
-  db.profile.prenom = qs('prenom').value.trim();
-  db.profile.classe = qs('classe').value.trim();
-  setDB(db);
-  updateProfileLine();
-  showPage('dashboard');
+// dashboard buttons
+$('btnCycle').onclick = ()=> { renderCycles(); show('cycle'); };
+$('btnWarmup').onclick = ()=> {
+  const c = DB.cycles.find(x=>x.id===DB.selected);
+  if(!c){ alert('Sélectionne un cycle'); renderCycles(); show('cycle'); return; }
+  $('warmupCycle').textContent = c.name;
+  $('warmText').value = c.warmup||'';
+  show('warmup');
 };
-
-function updateProfileLine(){
-  const db = getDB();
-  const p = db.profile;
-  qs('profileLine').textContent = `${p.nom||'—'} ${p.prenom||''} — ${p.classe||''}`;
-}
-
-/* Dashboard buttons */
-qs('btnCycle').onclick = ()=> {
-  renderCyclesList();
-  showPage('cycle');
+$('btnNew').onclick = ()=> {
+  const c = DB.cycles.find(x=>x.id===DB.selected);
+  if(!c){ alert('Sélectionne un cycle'); renderCycles(); show('cycle'); return; }
+  $('currentCycle').textContent = c.name;
+  $('sessionText').value = '';
+  show('newsession');
 };
-qs('btnWarmup').onclick = ()=> {
-  const db = getDB();
-  const c = db.cycles.find(x=>x.id===db.selectedCycleId);
-  if(!c){ alert('Sélectionne ou crée d\\'abord un cycle'); renderCyclesList(); showPage('cycle'); return; }
-  qs('warmupCycleName').textContent = c.name || '—';
-  qs('warmupText').value = c.warmup || '';
-  showPage('warmup');
-};
-qs('btnNewSession').onclick = ()=> {
-  const db = getDB(); const c = db.cycles.find(x=>x.id===db.selectedCycleId);
-  if(!c){ alert('Sélectionne ou crée d\\'abord un cycle'); renderCyclesList(); showPage('cycle'); return; }
-  qs('currentCycleName').textContent = c.name;
-  qs('sessionText').value = '';
-  showPage('newsession');
-};
-qs('btnViewSessions').onclick = ()=> { renderSessionsUI(); showPage('sessions'); };
-qs('btnExport').onclick = ()=> { downloadExport(); };
+$('btnList').onclick = ()=> { renderSessions(); show('list'); };
+$('btnExport').onclick = ()=> { exportJSON(); };
 
-/* Cycle create/select */
-qs('btnCreateCycle').onclick = ()=>{
-  const name = qs('cycleName').value.trim();
-  if(!name){ alert('Donne un nom au cycle'); return; }
-  const db = getDB();
-  // check existing by name
-  let c = db.cycles.find(x=>x.name.toLowerCase()===name.toLowerCase());
-  if(!c){
-    c = { id: nid(), name, warmup:'', sessions:[] };
-    db.cycles.push(c);
-  }
-  db.selectedCycleId = c.id;
-  setDB(db);
-  renderCyclesList();
-  alert('Cycle sélectionné : '+c.name);
-  showPage('dashboard');
+// cycles
+$('createCycle').onclick = ()=>{
+  const name = $('cycleName').value.trim();
+  if(!name){ alert('Nom requis'); return; }
+  let c = DB.cycles.find(x=>x.name.toLowerCase()===name.toLowerCase());
+  if(!c){ c = { id:nid(), name, warmup:'', sessions:[] }; DB.cycles.push(c); }
+  DB.selected = c.id; save(DB); renderCycles(); alert('Cycle: '+c.name); show('dashboard');
 };
+$('cycleBack').onclick = ()=> show('dashboard');
 
-function renderCyclesList(){
-  const db = getDB();
-  const node = qs('cyclesList'); node.innerHTML = '';
-  if((db.cycles||[]).length===0){
-    node.innerHTML = '<div class="muted">Aucun cycle — crée un cycle avec le champ ci-dessous.</div>';
-    return;
-  }
-  db.cycles.slice().forEach(c=>{
-    const div = document.createElement('div');
-    div.style.padding='8px'; div.style.borderBottom='1px solid #f0f2f5';
-    div.innerHTML = `<strong>${c.name}</strong> <span style="color:var(--muted)">(${(c.sessions||[]).length} séances)</span>
+function renderCycles(){
+  const node = $('cycleList'); node.innerHTML = '';
+  if(!DB.cycles.length) { node.innerHTML = '<div class="muted">Aucun cycle</div>'; return; }
+  DB.cycles.forEach(c=>{
+    const el = document.createElement('div');
+    el.style.padding='8px'; el.style.borderBottom='1px solid #eee';
+    el.innerHTML = `<strong>${c.name}</strong> <span style="color:#6b7280">(${(c.sessions||[]).length} séances)</span>
       <div style="margin-top:6px"><button class="smallbtn" data-id="${c.id}">Sélectionner</button></div>`;
-    node.appendChild(div);
-    div.querySelector('button').onclick = (e)=>{
-      const id = e.currentTarget.dataset.id;
-      const db2 = getDB(); db2.selectedCycleId = id; setDB(db2);
-      alert('Cycle sélectionné : '+c.name);
-      showPage('dashboard');
-    };
+    node.appendChild(el);
+    el.querySelector('button').onclick = (e)=>{ DB.selected = e.currentTarget.dataset.id; save(DB); alert('Sélectionné'); show('dashboard'); };
   });
 }
 
-/* Warmup save */
-qs('btnSaveWarmup').onclick = ()=>{
-  const db = getDB(); const c = db.cycles.find(x=>x.id===db.selectedCycleId);
-  if(!c){ alert('Aucun cycle sélectionné'); return; }
-  c.warmup = qs('warmupText').value || '';
-  setDB(db);
-  alert('Échauffement enregistré pour '+c.name);
-  showPage('dashboard');
+// warmup
+$('saveWarm').onclick = ()=> {
+  const c = DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert('Aucun cycle'); return; }
+  c.warmup = $('warmText').value || '';
+  save(DB); alert('Échauffement enregistré'); show('dashboard');
 };
+$('warmBack').onclick = ()=> show('dashboard');
 
-/* Save session (single text field), date forced */
-qs('btnSaveSession').onclick = ()=>{
-  const text = qs('sessionText').value.trim();
-  if(!text){ alert('Écris quelque chose pour la séance'); return; }
-  const db = getDB(); const c = db.cycles.find(x=>x.id===db.selectedCycleId);
-  if(!c){ alert('Aucun cycle sélectionné'); return; }
-  const d = todayLux();
-  const now = new Date().toISOString();
-  const s = { id: nid(), dateISO: d, text, created_atISO: now };
-  c.sessions = c.sessions || [];
-  c.sessions.push(s); // append: oldest -> newest; UI will reverse for display
-  setDB(db);
-  qs('sessionText').value = '';
+// save session
+$('saveSession').onclick = ()=> {
+  const txt = $('sessionText').value.trim(); if(!txt){ alert('Écris quelque chose'); return; }
+  const c = DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert('Aucun cycle'); return; }
+  const d = todayLux(); const now = new Date().toISOString();
+  const s = { id:nid(), dateISO:d, text:txt, created:now };
+  c.sessions = c.sessions||[]; c.sessions.push(s);
+  save(DB);
+  $('sessionText').value = '';
   alert('Séance enregistrée ('+d+')');
-  showPage('dashboard');
+  show('dashboard');
 };
+$('sessionBack').onclick = ()=> show('dashboard');
 
-/* Sessions view */
-function renderSessionsUI(){
-  const db = getDB(); const c = db.cycles.find(x=>x.id===db.selectedCycleId);
-  const node = qs('sessionsList'); node.innerHTML = '';
-  if(!c){ node.innerHTML = '<div class="muted">Aucun cycle sélectionné.</div>'; return; }
-  if(!(c.sessions||[]).length){ node.innerHTML = '<div class="muted">Aucune séance pour ce cycle.</div>'; return; }
-  // show newest first
+// list sessions
+function renderSessions(){
+  const node = $('sessionsContainer'); node.innerHTML = '';
+  const c = DB.cycles.find(x=>x.id===DB.selected);
+  if(!c){ node.innerHTML = '<div class="muted">Aucun cycle sélectionné</div>'; return; }
+  if(!(c.sessions||[]).length){ node.innerHTML = '<div class="muted">Aucune séance</div>'; return; }
   c.sessions.slice().reverse().forEach(s=>{
-    const d = document.createElement('div'); d.style.padding='10px'; d.style.borderBottom='1px solid #f0f2f5';
+    const d = document.createElement('div'); d.style.padding='10px'; d.style.borderBottom='1px solid #eee';
     d.innerHTML = `<div style="font-weight:700">${s.dateISO}</div><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(s.text)}</div>`;
     node.appendChild(d);
   });
 }
+$('listBack').onclick = ()=> show('dashboard');
 
-/* Export JSON (download) */
-function downloadExport(){
-  const db = getDB(); const c = db.cycles.find(x=>x.id===db.selectedCycleId);
-  if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; }
-  const payload = { profile: db.profile, cycle: { name:c.name, sessions:c.sessions||[], warmup:c.warmup||'' } };
+// export
+function exportJSON(){
+  const c = DB.cycles.find(x=>x.id===DB.selected);
+  if(!c){ alert('Aucun cycle'); return; }
+  const payload = { profile: DB.profile, cycle:{ name:c.name, warmup:c.warmup||'', sessions:c.sessions||[] } };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url;
-  const fileName = `${(db.profile.nom||'eleve')}_${(db.profile.prenom||'')}_${c.name || 'cycle'}.json`;
-  a.download = fileName;
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
+  const url = URL.createObjectURL(blob); const a = document.createElement('a');
+  a.href = url; a.download = `${(DB.profile.nom||'eleve')}_${(DB.profile.prenom||'')}_${c.name||'cycle'}.json`;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
 }
 
-/* util */
+// util
 function escapeHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-/* navigation back buttons */
-qs('btnCycleBack').onclick = ()=> showPage('dashboard');
-qs('btnWarmupBack').onclick = ()=> showPage('dashboard');
-qs('btnNewSessionBack').onclick = ()=> showPage('dashboard');
-qs('btnSessionsBack').onclick = ()=> showPage('dashboard');
-
-/* init */
-(function init(){
-  const dbx = loadDB();
-  if(!dbx || !dbx.profile){ setDB(defaultDB()); }
-  const db = getDB();
-  // prefill profile fields
-  qs('nom').value = db.profile.nom || '';
-  qs('prenom').value = db.profile.prenom || '';
-  qs('classe').value = db.profile.classe || '';
-  updateProfileLine();
-  // start on splash
-  showPage('splash');
-})();
 </script>
 </body>
 </html>

@@ -1,0 +1,1 @@
+ScanCarnet v3 - déploye les fichiers sur GitHub Pages (uploade index.html, sw.js, manifest.webmanifest).
