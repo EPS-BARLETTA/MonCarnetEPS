@@ -1,222 +1,369 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>ScanCarnet — Carnet d'entraînement</title>
 <style>
-  :root{--bg:#f6f7fb;--card:#fff;--accent:#0b73ff;--muted:#6b7280}
-  body{margin:0;font-family:system-ui,Roboto,Arial;background:var(--bg);color:#111}
-  .container{max-width:900px;margin:18px auto;padding:12px}
-  .card{background:var(--card);border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
-  button{background:var(--accent);color:#fff;border:none;padding:10px;border-radius:8px;cursor:pointer}
-  .smallbtn{background:#fff;color:var(--accent);border:1px solid var(--accent);padding:8px}
-  input,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #e6e9ef}
-  textarea{min-height:140px;white-space:pre-wrap}
-  .muted{color:var(--muted);font-size:0.95rem}
-  .hidden{display:none}
+  :root{
+    --bg: #f3f6ff;
+    --card: #ffffff;
+    --accent: #0b5fff;
+    --accent-2: #2dd4bf;
+    --muted: #6b7280;
+    --shadow: 0 6px 20px rgba(12,18,35,0.08);
+    --radius: 14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,var(--bg),#ffffff);color:#0f172a;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px}
+  .app{width:100%;max-width:980px}
+  header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+  .logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#3aa0ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;box-shadow:var(--shadow)}
+  .title{font-size:1.4rem;font-weight:700}
+  .subtitle{color:var(--muted);font-size:0.95rem}
+  .card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:12px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #e6eefb;font-size:1rem;background:transparent}
+  textarea{min-height:140px;white-space:pre-wrap;resize:vertical}
+  button{background:var(--accent);color:white;border:0;padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:600}
+  button.ghost{background:#fff;color:var(--accent);border:1px solid rgba(11,86,255,0.12)}
+  .small{font-size:0.95rem;color:var(--muted)}
+  .muted{color:var(--muted)}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .center{display:flex;align-items:center;justify-content:center}
+  footer{margin-top:12px;text-align:center;color:var(--muted);font-size:0.9rem}
+  /* sessions list */
+  .session{padding:12px;border-radius:10px;border:1px solid #eef5ff;margin-bottom:8px;background:linear-gradient(180deg,#ffffff,#fbfdff)}
+  .session .d{font-weight:700;color:#0b5fff}
+  /* help modal */
+  .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(3,7,18,0.4);z-index:40;padding:20px}
+  .modal .card{max-width:720px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  /* responsive */
+  @media (max-width:720px){ .row{flex-direction:column} .logo{width:52px;height:52px} }
 </style>
 </head>
 <body>
-<div class="container">
+  <div class="app">
+    <header>
+      <div class="logo">SC</div>
+      <div>
+        <div class="title">ScanCarnet</div>
+        <div class="subtitle">Carnet d'entraînement — Équipe EPS Lycée Vauban — LUXEMBOURG</div>
+      </div>
+    </header>
 
-  <div id="splash" class="card">
-    <h1>ScanCarnet</h1>
-    <div class="muted">Carnet d'entraînement — Équipe EPS Lycée Vauban</div>
-    <div style="height:12px"></div>
-    <button id="startBtn">Démarrer</button>
-  </div>
+    <div class="card" id="panel-splash">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <div>
+          <h2 style="margin:0">Bienvenue sur ScanCarnet</h2>
+          <div class="small">Appuie sur Démarrer pour remplir ton profil et commencer.</div>
+        </div>
+        <div>
+          <button id="btnStart">Démarrer</button>
+        </div>
+      </div>
+    </div>
 
-  <div id="profile" class="card hidden">
-    <h2>Profil</h2>
-    <label>Nom</label><input id="nom" placeholder="Nom"/>
-    <label>Prénom</label><input id="prenom" placeholder="Prénom"/>
-    <label>Classe</label><input id="classe" placeholder="Ex: Terminale A"/>
-    <div style="height:10px"></div>
-    <button id="saveProfile">Sauvegarder</button>
-    <button id="backSplash" class="smallbtn">Retour</button>
-  </div>
+    <div class="card hidden" id="panel-profile" style="display:none">
+      <h3 style="margin:0 0 8px 0">Profil élève</h3>
+      <div class="row">
+        <div style="flex:1"><label class="small">Nom</label><input id="nom" placeholder="Nom"/></div>
+        <div style="flex:1"><label class="small">Prénom</label><input id="prenom" placeholder="Prénom"/></div>
+        <div style="flex:1"><label class="small">Classe</label><input id="classe" placeholder="Ex: Terminale A"/></div>
+      </div>
+      <div class="controls">
+        <button id="saveProfile">Sauvegarder</button>
+        <button id="backSplash" class="ghost">Retour</button>
+        <button id="btnHelp" class="ghost">Aide</button>
+      </div>
+    </div>
 
-  <div id="dashboard" class="card hidden">
-    <h2>Tableau de bord</h2>
-    <div class="muted">Profil : <span id="profileLine">—</span></div>
-    <div style="height:10px"></div>
-    <button id="btnCycle">Cycle</button>
-    <button id="btnWarmup">Échauffement</button>
-    <button id="btnNew">Nouvelle séance</button>
-    <button id="btnList" class="smallbtn">Voir séances</button>
-    <button id="btnExport" class="smallbtn">Exporter JSON</button>
-  </div>
+    <div class="card hidden" id="panel-dashboard" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-weight:700" id="profileLine">—</div>
+          <div class="small">Ton carnet — choisis une action</div>
+        </div>
+        <div class="actions">
+          <button id="btnExportCSV" title="Exporter CSV">CSV</button>
+          <button id="btnExportPDF" title="Exporter PDF">PDF</button>
+          <button id="btnExportJSON" title="Exporter JSON" class="ghost">JSON</button>
+          <button id="btnReset" title="Réinitialiser" class="ghost">Réinitialiser</button>
+        </div>
+      </div>
 
-  <div id="cycle" class="card hidden">
-    <h3>Cycle</h3>
-    <label>Nom du cycle</label><input id="cycleName" placeholder="Ex: Badminton"/>
+      <div style="height:12px"></div>
+      <div class="row">
+        <button id="btnCycle">Cycle</button>
+        <button id="btnWarmup">Échauffement</button>
+        <button id="btnNew">Nouvelle séance</button>
+        <button id="btnList" class="ghost">Voir séances</button>
+      </div>
+    </div>
+
+    <div class="card hidden" id="panel-cycle" style="display:none">
+      <h3>Cycle (APSA)</h3>
+      <label class="small">Nom du cycle</label>
+      <div class="row">
+        <input id="cycleName" placeholder="Ex : Badminton" />
+        <button id="createCycle">Créer / Sélectionner</button>
+        <button id="cycleBack" class="ghost">Retour</button>
+      </div>
+      <div id="cycleList" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card hidden" id="panel-warmup" style="display:none">
+      <h3>Échauffement (modèle lié au cycle)</h3>
+      <div class="small" id="warmupCycleName">—</div>
+      <label class="small">Échauffement (texte multi-lignes)</label>
+      <textarea id="warmText" placeholder="- Footing 8 min"></textarea>
+      <div class="controls">
+        <button id="saveWarm">Enregistrer</button>
+        <button id="warmBack" class="ghost">Retour</button>
+      </div>
+    </div>
+
+    <div class="card hidden" id="panel-newsession" style="display:none">
+      <h3>Nouvelle séance</h3>
+      <div class="small">La date est enregistrée automatiquement et figée (Europe/Luxembourg).</div>
+      <label class="small">Saisie unique</label>
+      <textarea id="sessionText" placeholder="Décris la séance..."></textarea>
+      <div class="controls">
+        <button id="saveSession">Enregistrer séance</button>
+        <button id="sessionBack" class="ghost">Retour</button>
+      </div>
+      <div style="height:8px" class="small">Cycle courant : <span id="currentCycle">—</span></div>
+    </div>
+
+    <div class="card hidden" id="panel-list" style="display:none">
+      <h3>Séances archivées</h3>
+      <div class="small">Liste du plus récent au plus ancien</div>
+      <div id="sessionsContainer" style="margin-top:12px"></div>
+      <div class="controls" style="margin-top:12px">
+        <button id="listBack" class="ghost">Retour</button>
+      </div>
+    </div>
+
     <div style="height:8px"></div>
-    <button id="createCycle">Créer / Sélectionner</button>
-    <button id="cycleBack" class="smallbtn">Retour</button>
-    <div id="cycleList" style="margin-top:12px"></div>
+    <footer>ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</footer>
   </div>
 
-  <div id="warmup" class="card hidden">
-    <h3>Échauffement</h3>
-    <div class="muted" id="warmupCycle">—</div>
-    <label>Échauffement (multi-lignes)</label>
-    <textarea id="warmText" placeholder="- Footing 8 min"></textarea>
-    <div style="height:8px"></div>
-    <button id="saveWarm">Enregistrer</button>
-    <button id="warmBack" class="smallbtn">Retour</button>
+  <!-- HELP Modal -->
+  <div id="modalHelp" class="modal">
+    <div class="card" style="max-width:720px">
+      <div class="topbar">
+        <div><strong>Aide — Comment utiliser ScanCarnet</strong></div>
+        <div><button id="closeHelp" class="ghost">Fermer</button></div>
+      </div>
+      <div style="height:8px"></div>
+      <ol>
+        <li>Appuie sur <strong>Démarrer</strong> puis remplis ton profil (nom, prénom, classe).</li>
+        <li>Crée ou sélectionne un <strong>Cycle</strong> (ex : Badminton).</li>
+        <li>Optionnel : ajoute un <strong>Échauffement</strong> type pour le cycle.</li>
+        <li>Pour chaque séance : <strong>Nouvelle séance</strong> → écris dans le champ → <strong>Enregistrer</strong>. La date sera ajoutée automatiquement.</li>
+        <li>Export : utilise CSV (lisible dans Excel) ou PDF (impression / Enregistrer en PDF) ou JSON (sauvegarde brute).</li>
+        <li>Bouton Réinitialiser : vide toutes les données stockées sur l'appareil.</li>
+      </ol>
+    </div>
   </div>
-
-  <div id="newsession" class="card hidden">
-    <h3>Nouvelle séance</h3>
-    <div class="muted">Date enregistrée automatiquement (Europe/Luxembourg)</div>
-    <label>Saisie unique</label>
-    <textarea id="sessionText" placeholder="Décris la séance..."></textarea>
-    <div style="height:8px"></div>
-    <button id="saveSession">Enregistrer séance</button>
-    <button id="sessionBack" class="smallbtn">Retour</button>
-    <div style="height:8px" class="muted">Cycle : <span id="currentCycle">—</span></div>
-  </div>
-
-  <div id="list" class="card hidden">
-    <h3>Séances</h3>
-    <div id="sessionsContainer"></div>
-    <div style="height:8px"></div>
-    <button id="listBack" class="smallbtn">Retour</button>
-  </div>
-
-</div>
-
-<footer style="text-align:center;padding:12px;color:#6b7280">ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</footer>
 
 <script>
+// Utilities and storage
 const $ = id => document.getElementById(id);
-const pages = ['splash','profile','dashboard','cycle','warmup','newsession','list'];
-function show(p){ pages.forEach(x=>$(x).classList.add('hidden')); $(p).classList.remove('hidden'); }
+const STORAGE_KEY = 'scancarnet_v4';
 
-const KEY = 'scancarnet_v3';
-function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } }
-function save(db){ localStorage.setItem(KEY, JSON.stringify(db)); }
-function initDB(){ let d = load(); if(!d.profile) d={profile:{nom:'',prenom:'',classe:''},cycles:[],selected:null}; save(d); return d; }
+function loadDB(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e){ return {}; } }
+function saveDB(db){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+function defaultDB(){ return { profile:{nom:'',prenom:'',classe:''}, cycles:[], selected:null }; }
+function getDB(){ let d = loadDB(); if(!d || !d.profile) { d = defaultDB(); saveDB(d); } return d; }
+function setDB(d){ saveDB(d); DB = d; }
 
-function nid(){ return Math.random().toString(36).slice(2,8); }
-function todayLux(){ try{return new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Luxembourg'});}catch(e){return new Date().toISOString().slice(0,10);} }
+function nid(){ return Math.random().toString(36).slice(2,9); }
+function todayLux(){ try{ return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Luxembourg' }); } catch(e){ return new Date().toISOString().slice(0,10); } }
 
-let DB = initDB();
+let DB = getDB();
 
-// splash -> profile
-$('startBtn').onclick = ()=> show('profile');
-$('backSplash').onclick = ()=> show('splash');
+// UI show/hide helpers
+function hideAll(){ ['panel-splash','panel-profile','panel-dashboard','panel-cycle','panel-warmup','panel-newsession','panel-list'].forEach(id=> $(id).style.display='none'); }
+function show(id){ hideAll(); $(id).style.display='block'; }
+function updateProfileLine(){ const p = DB.profile; $('profileLine').textContent = `${p.nom || '—'} ${p.prenom || ''} — ${p.classe || ''}`; }
 
-// profile save
-$('saveProfile').onclick = ()=>{
-  DB.profile.nom = $('nom').value.trim();
-  DB.profile.prenom = $('prenom').value.trim();
-  DB.profile.classe = $('classe').value.trim();
-  save(DB);
-  updateProfile();
-  show('dashboard');
+// Init state
+show('panel-splash');
+updateProfileLine();
+
+// Navigation
+$('btnStart').onclick = ()=> { show('panel-profile'); };
+$('backSplash').onclick = ()=> { show('panel-splash'); };
+
+$('saveProfile').onclick = ()=> {
+  const d = getDB();
+  d.profile.nom = $('nom').value.trim();
+  d.profile.prenom = $('prenom').value.trim();
+  d.profile.classe = $('classe').value.trim();
+  setDB(d);
+  updateProfileLine();
+  alert('Profil enregistré');
+  show('panel-dashboard');
 };
 
-function updateProfile(){
-  $('profileLine').textContent = (DB.profile.nom||'—') + ' ' + (DB.profile.prenom||'') + ' — ' + (DB.profile.classe||'');
-  $('nom').value = DB.profile.nom || '';
-  $('prenom').value = DB.profile.prenom || '';
-  $('classe').value = DB.profile.classe || '';
-}
-updateProfile();
+$('btnHelp').onclick = ()=> { $('modalHelp').style.display='flex'; };
+$('closeHelp').onclick = ()=> { $('modalHelp').style.display='none'; };
 
-// dashboard buttons
-$('btnCycle').onclick = ()=> { renderCycles(); show('cycle'); };
+$('btnCycle').onclick = ()=> { renderCycles(); show('panel-cycle'); };
 $('btnWarmup').onclick = ()=> {
   const c = DB.cycles.find(x=>x.id===DB.selected);
-  if(!c){ alert('Sélectionne un cycle'); renderCycles(); show('cycle'); return; }
-  $('warmupCycle').textContent = c.name;
-  $('warmText').value = c.warmup||'';
-  show('warmup');
+  if(!c){ alert('Sélectionne ou crée d\'abord un cycle'); renderCycles(); show('panel-cycle'); return; }
+  $('warmupCycleName').textContent = c.name;
+  $('warmText').value = c.warmup || '';
+  show('panel-warmup');
 };
 $('btnNew').onclick = ()=> {
   const c = DB.cycles.find(x=>x.id===DB.selected);
-  if(!c){ alert('Sélectionne un cycle'); renderCycles(); show('cycle'); return; }
+  if(!c){ alert('Sélectionne ou crée d\'abord un cycle'); renderCycles(); show('panel-cycle'); return; }
   $('currentCycle').textContent = c.name;
   $('sessionText').value = '';
-  show('newsession');
+  show('panel-newsession');
 };
-$('btnList').onclick = ()=> { renderSessions(); show('list'); };
-$('btnExport').onclick = ()=> { exportJSON(); };
+$('btnList').onclick = ()=> { renderSessions(); show('panel-list'); };
 
-// cycles
-$('createCycle').onclick = ()=>{
+// Cycle management
+$('createCycle').onclick = ()=> {
   const name = $('cycleName').value.trim();
-  if(!name){ alert('Nom requis'); return; }
-  let c = DB.cycles.find(x=>x.name.toLowerCase()===name.toLowerCase());
-  if(!c){ c = { id:nid(), name, warmup:'', sessions:[] }; DB.cycles.push(c); }
-  DB.selected = c.id; save(DB); renderCycles(); alert('Cycle: '+c.name); show('dashboard');
+  if(!name){ alert('Donne un nom au cycle'); return; }
+  let d = getDB();
+  let c = d.cycles.find(x=>x.name.toLowerCase()===name.toLowerCase());
+  if(!c){ c = { id:nid(), name, warmup:'', sessions:[] }; d.cycles.push(c); }
+  d.selected = c.id; setDB(d);
+  renderCycles();
+  alert('Cycle sélectionné : '+c.name);
+  show('panel-dashboard');
 };
-$('cycleBack').onclick = ()=> show('dashboard');
-
 function renderCycles(){
-  const node = $('cycleList'); node.innerHTML = '';
-  if(!DB.cycles.length) { node.innerHTML = '<div class="muted">Aucun cycle</div>'; return; }
-  DB.cycles.forEach(c=>{
-    const el = document.createElement('div');
-    el.style.padding='8px'; el.style.borderBottom='1px solid #eee';
-    el.innerHTML = `<strong>${c.name}</strong> <span style="color:#6b7280">(${(c.sessions||[]).length} séances)</span>
-      <div style="margin-top:6px"><button class="smallbtn" data-id="${c.id}">Sélectionner</button></div>`;
+  const node = $('cycleList'); node.innerHTML='';
+  const d = getDB();
+  if(!d.cycles.length){ node.innerHTML = '<div class="small muted">Aucun cycle</div>'; return; }
+  d.cycles.forEach(c=>{
+    const el = document.createElement('div'); el.style.padding='8px'; el.style.borderBottom='1px solid #f1f7ff';
+    el.innerHTML = `<strong>${c.name}</strong> <span style="color:var(--muted)">(${(c.sessions||[]).length} séances)</span>
+      <div style="margin-top:8px"><button class="smallbtn" data-id="${c.id}">Sélectionner</button></div>`;
     node.appendChild(el);
-    el.querySelector('button').onclick = (e)=>{ DB.selected = e.currentTarget.dataset.id; save(DB); alert('Sélectionné'); show('dashboard'); };
+    el.querySelector('button').onclick = (e)=>{ const id = e.currentTarget.dataset.id; let dd = getDB(); dd.selected = id; setDB(dd); alert('Cycle sélectionné'); show('panel-dashboard'); };
   });
 }
 
-// warmup
+// Warmup
 $('saveWarm').onclick = ()=> {
-  const c = DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert('Aucun cycle'); return; }
+  let d = getDB(); const c = d.cycles.find(x=>x.id===d.selected);
+  if(!c){ alert('Aucun cycle'); return; }
   c.warmup = $('warmText').value || '';
-  save(DB); alert('Échauffement enregistré'); show('dashboard');
+  setDB(d);
+  alert('Échauffement enregistré');
+  show('panel-dashboard');
 };
-$('warmBack').onclick = ()=> show('dashboard');
+$('warmBack').onclick = ()=> show('panel-dashboard');
 
-// save session
+// Save session (single field), date forced
 $('saveSession').onclick = ()=> {
-  const txt = $('sessionText').value.trim(); if(!txt){ alert('Écris quelque chose'); return; }
-  const c = DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert('Aucun cycle'); return; }
-  const d = todayLux(); const now = new Date().toISOString();
-  const s = { id:nid(), dateISO:d, text:txt, created:now };
-  c.sessions = c.sessions||[]; c.sessions.push(s);
-  save(DB);
+  const txt = $('sessionText').value.trim();
+  if(!txt){ alert('Écris quelque chose pour la séance'); return; }
+  let d = getDB(); const c = d.cycles.find(x=>x.id===d.selected);
+  if(!c){ alert('Aucun cycle sélectionné'); return; }
+  const date = todayLux();
+  const now = new Date().toISOString();
+  const s = { id:nid(), dateISO: date, text: txt, created_atISO: now };
+  c.sessions = c.sessions || []; c.sessions.push(s);
+  setDB(d);
   $('sessionText').value = '';
-  alert('Séance enregistrée ('+d+')');
-  show('dashboard');
+  alert('Séance enregistrée ('+date+')');
+  show('panel-dashboard');
 };
-$('sessionBack').onclick = ()=> show('dashboard');
+$('sessionBack').onclick = ()=> show('panel-dashboard');
 
-// list sessions
+// Render sessions list
 function renderSessions(){
   const node = $('sessionsContainer'); node.innerHTML = '';
-  const c = DB.cycles.find(x=>x.id===DB.selected);
-  if(!c){ node.innerHTML = '<div class="muted">Aucun cycle sélectionné</div>'; return; }
-  if(!(c.sessions||[]).length){ node.innerHTML = '<div class="muted">Aucune séance</div>'; return; }
+  const d = getDB(); const c = d.cycles.find(x=>x.id===d.selected);
+  if(!c){ node.innerHTML = '<div class="small muted">Aucun cycle sélectionné</div>'; return; }
+  if(!(c.sessions||[]).length){ node.innerHTML = '<div class="small muted">Aucune séance</div>'; return; }
   c.sessions.slice().reverse().forEach(s=>{
-    const d = document.createElement('div'); d.style.padding='10px'; d.style.borderBottom='1px solid #eee';
-    d.innerHTML = `<div style="font-weight:700">${s.dateISO}</div><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(s.text)}</div>`;
-    node.appendChild(d);
+    const el = document.createElement('div'); el.className='session';
+    el.innerHTML = `<div class="d">${s.dateISO}</div><div style="margin-top:8px;white-space:pre-wrap">${escapeHtml(s.text)}</div>`;
+    node.appendChild(el);
   });
-}
-$('listBack').onclick = ()=> show('dashboard');
-
-// export
-function exportJSON(){
-  const c = DB.cycles.find(x=>x.id===DB.selected);
-  if(!c){ alert('Aucun cycle'); return; }
-  const payload = { profile: DB.profile, cycle:{ name:c.name, warmup:c.warmup||'', sessions:c.sessions||[] } };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
-  const url = URL.createObjectURL(blob); const a = document.createElement('a');
-  a.href = url; a.download = `${(DB.profile.nom||'eleve')}_${(DB.profile.prenom||'')}_${c.name||'cycle'}.json`;
-  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  updateProfileLine();
 }
 
-// util
-function escapeHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+// Export CSV (semicolon separated for Excel FR)
+$('btnExportCSV').onclick = ()=> {
+  const d = getDB(); const c = d.cycles.find(x=>x.id===d.selected);
+  if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; }
+  const head = ['nom','prenom','classe','cycle','date','texte','created_at'];
+  const rows = (c.sessions||[]).map(s=>[ d.profile.nom, d.profile.prenom, d.profile.classe, c.name, s.dateISO, s.text.replace(/\n/g,' '), s.created_atISO ]);
+  const csv = [head].concat(rows).map(r=> r.map(v=> '"'+String(v||'').replace(/"/g,'""') + '"').join(';')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+};
+
+// Export JSON
+$('btnExportJSON').onclick = ()=> {
+  const d = getDB(); const c = d.cycles.find(x=>x.id===d.selected);
+  if(!c){ alert('Sélectionne un cycle'); return; }
+  const payload = { profile: d.profile, cycle: { name:c.name, warmup:c.warmup||'', sessions:c.sessions||[] } };
+  const blob = new Blob([JSON.stringify(payload,null,2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url;
+  a.download = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.json`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+};
+
+// Export PDF (print-to-PDF): open print window with formatted content
+$('btnExportPDF').onclick = ()=> {
+  const d = getDB(); const c = d.cycles.find(x=>x.id===d.selected);
+  if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; }
+  const title = `Carnet - ${d.profile.nom || ''} ${d.profile.prenom || ''} - ${c.name}`;
+  let html = `
+    <html><head><meta charset="utf-8"/><title>${title}</title>
+    <style>body{font-family:Arial,Helvetica,sans-serif;padding:24px;color:#0b1220} h1{color:#0b5fff} .s{margin-bottom:16px;border-bottom:1px solid #eee;padding-bottom:8px} .date{font-weight:700;color:#0b5fff}</style>
+    </head><body>
+    <h1>ScanCarnet — ${c.name}</h1>
+    <div>Élève : <strong>${d.profile.nom||''} ${d.profile.prenom||''}</strong> — Classe : <strong>${d.profile.classe||''}</strong></div>
+    <div style="height:12px"></div>`;
+  (c.sessions||[]).forEach(s=>{
+    html += `<div class="s"><div class="date">${s.dateISO}</div><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(s.text)}</div></div>`;
+  });
+  html += `<div style="height:40px"></div><div style="font-size:0.9rem;color:#6b7280">Généré par ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</div>`;
+  html += `</body></html>`;
+  const w = window.open('', '_blank'); w.document.write(html); w.document.close();
+  // give time to render then trigger print
+  setTimeout(()=>{ try{ w.focus(); w.print(); }catch(e){ console.log('print error', e); } }, 400);
+};
+
+// Reset (clear all data)
+$('btnReset').onclick = ()=> {
+  if(!confirm('Confirmer : supprimer toutes les données locales et réinitialiser l\'application ?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  DB = defaultDB(); saveDB(DB);
+  location.reload();
+};
+
+// Helpers
+function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// init values from DB to inputs
+(function init(){
+  $('nom').value = DB.profile.nom || '';
+  $('prenom').value = DB.profile.prenom || '';
+  $('classe').value = DB.profile.classe || '';
+  updateProfileLine();
+})();
+
+// navigation back buttons
+$('cycleBack').onclick = ()=> show('panel-dashboard');
+$('warmBack').onclick = ()=> show('panel-dashboard');
+$('sessionBack').onclick = ()=> show('panel-dashboard');
+$('listBack').onclick = ()=> show('panel-dashboard');
 
 </script>
 </body>
