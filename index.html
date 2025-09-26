@@ -14,7 +14,7 @@
     .row{display:flex;gap:12px;flex-wrap:wrap;padding:16px}
     .card{background:var(--card);border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(12,18,35,.06);}
     input,select,textarea,button{font-size:1rem;padding:8px;border-radius:8px;border:1px solid #e6e9ef}
-    textarea{min-height:88px}
+    textarea{min-height:88px;white-space:pre-wrap}
     button{cursor:pointer}
     .btn{background:var(--accent);color:#fff;border:none}
     .btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent)}
@@ -25,12 +25,12 @@
     .list{max-height:300px;overflow:auto}
     table{width:100%;border-collapse:collapse}
     th,td{padding:6px;border-bottom:1px solid #f0f2f5;text-align:left}
-    footer{margin-top:auto;padding:14px 18px;background:#fff;border-top:1px solid #eef2f6;color:var(--muted);font-size:0.95rem}
+    footer{margin-top:auto;padding:14px 18px;background:#fff;border-top:1px solid #eef2f6;color:var(--muted);font-size:0.95rem;text-align:center}
     .muted{color:var(--muted);font-size:.9rem}
     .splash{background:linear-gradient(90deg,#0b73ff,#3aa0ff);color:white;padding:28px;border-radius:12px;margin:18px;text-align:center}
     .splash h2{margin:0;font-size:1.6rem;letter-spacing:0.4px}
     .splash p{margin:8px 0 0 0;opacity:0.95}
-    .container{max-width:1100px;margin:0 auto;width:100%;}
+    .container{max-width:1100px;margin:0 auto;width:100%;padding-bottom:20px}
   </style>
 </head>
 <body>
@@ -38,7 +38,7 @@
     <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><rect rx='8' width='44' height='44' fill='%230b73ff'/><text x='50%' y='58%' font-size='18' fill='white' font-family='Arial' text-anchor='middle'>SC</text></svg>" alt="logo" width="44" height="44">
     <div style="flex:1">
       <h1>ScanCarnet</h1>
-      <div class="small">Carnet d'entraînement — Equipe EPS Lycée Vauban</div>
+      <div class="small">Carnet d'entraînement — Équipe EPS Lycée Vauban</div>
     </div>
   </header>
 
@@ -51,7 +51,7 @@
     <div class="row">
       <div class="card" style="flex:1;min-width:320px;max-width:520px">
         <h3>Profil élève</h3>
-        <div class="small">(Remplissez une fois)</div>
+        <div class="small">(Remplis une fois)</div>
         <div class="space"></div>
         <label>Nom</label>
         <input id="nom" placeholder="Nom" autocomplete="name" />
@@ -90,13 +90,12 @@
 
     <div class="card">
       <h3>Échauffement type (modèle commun au cycle)</h3>
-      <div class="small">Tapez plusieurs lignes. Ce modèle est lié au cycle et modifiable à tout moment. Il sera proposé automatiquement dans chaque nouvelle séance.</div>
+      <div class="small">Tapez plusieurs lignes. Ce modèle est lié au cycle et modifiable à tout moment. Il peut être inséré dans la séance.</div>
       <div class="space"></div>
       <label>Échauffement (multi-lignes)</label>
-      <textarea id="warmTemplate" placeholder="Ex:
-- Footing 8 min
+      <textarea id="warmTemplate" placeholder="- Footing 8 min
 - Éducatifs 10 min
-- 4 x 30''/30''"></textarea>
+- 4 x 30''/30''" style="min-height:120px"></textarea>
       <div class="space"></div>
       <div style="display:flex;gap:8px">
         <button class="btn" id="saveWarmTemplate">Enregistrer le modèle</button>
@@ -106,24 +105,21 @@
 
     <div class="space"></div>
 
+    <!-- NEW: simplified large input blocks -->
     <div class="card">
       <h3>Nouvelle séance (enregistrement rapide)</h3>
-      <div class="small">La date est automatique au moment de l'enregistrement (l'élève ne peut pas la modifier). Utilise le modèle d'échauffement si besoin.</div>
+      <div class="small">La date est automatique au moment de l'enregistrement (figée). Écris l'échauffement et/ou le compte-rendu, puis Enregistrer.</div>
       <div class="space"></div>
-      <label>Objectif</label>
-      <input id="sessObjectif" placeholder="Ex: 2x8' au seuil" />
-      <label>Volume (value)</label>
-      <input id="sessVolumeValue" placeholder="16" type="number" />
-      <label>Unité (min | m | reps)</label>
-      <select id="sessVolumeUnit"><option>min</option><option>m</option><option>reps</option></select>
-      <label>RPE (0-10)</label>
-      <input id="sessRpe" type="number" min="0" max="10" />
-      <label>Ressenti</label>
-      <select id="sessRessenti"><option>😀</option><option>😐</option><option>😣</option></select>
-      <label>Notes / Échauffement (modifiable)</label>
-      <textarea id="sessNotes" placeholder="Tapez votre observation ou appuyez sur 'Insérer dans notes' pour ajouter l'échauffement modèle"></textarea>
-      <label>Bloc libre (journal) — texte libre</label>
-      <textarea id="sessJournal" placeholder="Ex: Ce que j'ai appris, difficultés, objectifs pour la prochaine séance..."></textarea>
+
+      <label>Échauffement (grand bloc — multi-lignes)</label>
+      <textarea id="sessWarmup" placeholder="Ex : - Footing 8 min
+- Éducatifs 10 min
+- 4 x 30''/30''" style="min-height:160px"></textarea>
+
+      <div class="space"></div>
+
+      <label>Compte-rendu / Séance (grand bloc — texte libre)</label>
+      <textarea id="sessReport" placeholder="Ex : Travail de dribble, 3 séries, sensations, points à améliorer..." style="min-height:220px"></textarea>
 
       <div class="space"></div>
       <div style="display:flex;gap:8px">
@@ -136,7 +132,7 @@
 
     <div class="card">
       <h3>Sessions & Export</h3>
-      <div class="small">Liste des séances du cycle sélectionné (les dates sont figées au moment de l'enregistrement).</div>
+      <div class="small">Liste des séances du cycle sélectionné</div>
       <div class="space"></div>
       <div id="sessionsTable"></div>
       <div class="space"></div>
@@ -158,10 +154,10 @@
 
 <script>
 // CONFIG
-const APPS_SCRIPT_WEBHOOK = 'https://SCRIPT_WEB_APP_URL_HERE'; // replace with your Apps Script URL
-const SECRET_TOKEN = 'CHANGE_THIS_TOKEN'; // replace with secret
+const APPS_SCRIPT_WEBHOOK = 'https://SCRIPT_WEB_APP_URL_HERE';
+const SECRET_TOKEN = 'CHANGE_THIS_TOKEN';
 
-// IndexedDB wrapper (same as MVP)
+// IndexedDB wrapper
 function openDB(){ return new Promise((resolve, reject)=>{ const r = indexedDB.open('scanprof-carnet', 1); r.onupgradeneeded = ()=>{ r.result.createObjectStore('store'); }; r.onsuccess = ()=> resolve(r.result); r.onerror = ()=> reject(r.error); }); }
 async function load(){ const db = await openDB(); return new Promise((resolve, reject)=>{ const tx = db.transaction('store','readonly'); const st = tx.objectStore('store'); const req = st.get('data'); req.onsuccess = ()=> resolve(req.result || defaultDB()); req.onerror = ()=> reject(req.error); }); }
 async function save(data){ const db = await openDB(); return new Promise((resolve,reject)=>{ const tx = db.transaction('store','readwrite'); const st = tx.objectStore('store'); const req = st.put(data, 'data'); req.onsuccess = ()=> resolve(true); req.onerror = ()=> reject(req.error); }); }
@@ -178,30 +174,46 @@ function showStatus(msg,ok=true){ el('status').textContent = msg; el('status').s
 // Render
 async function renderCycles(){ const db = await load(); const container = el('cyclesList'); container.innerHTML=''; db.cycles.forEach(c=>{ const d = document.createElement('div'); d.className='small'; d.style.padding='6px'; d.style.borderBottom='1px solid #f0f2f5'; d.dataset.id = c.id; d.innerHTML = `<strong>${c.name}</strong> <span style='color:var(--muted)'>${c.apsa||''}</span> — <span class='small'>${(c.sessions||[]).length} séances</span>`; d.onclick = ()=> { selectCycle(c.id); }; container.appendChild(d); }); }
 async function renderWarmTemplate(cycle){ el('warmTemplate').value = cycle?.warmup?.template || ''; }
-async function renderSessions(cycle){ const node = el('sessionsTable'); node.innerHTML=''; if(!cycle) return; if(!cycle.sessions) cycle.sessions=[]; const table = document.createElement('table'); const thead = document.createElement('thead'); thead.innerHTML='<tr><th>Date</th><th>Objectif</th><th>Vol</th><th>RPE</th><th>Ressenti</th><th>Notes</th><th>Journal</th></tr>'; table.appendChild(thead); const tbody = document.createElement('tbody'); cycle.sessions.slice().reverse().forEach(s=>{ const tr = document.createElement('tr'); tr.innerHTML = `<td>${s.dateISO||''}</td><td>${s.objectif||''}</td><td>${s.volume?.value||''}${s.volume?.unit? ' '+s.volume.unit : ''}</td><td>${s.rpe||''}</td><td>${s.ressenti||''}</td><td>${(s.notes||'').replace(/\n/g,' ' )}</td><td>${(s.journal||'').replace(/\n/g,' ')}</td>`; tbody.appendChild(tr); }); table.appendChild(tbody); node.appendChild(table); }
+async function renderSessions(cycle){ const node = el('sessionsTable'); node.innerHTML=''; if(!cycle) return; if(!cycle.sessions) cycle.sessions=[]; const table = document.createElement('table'); const thead = document.createElement('thead'); thead.innerHTML='<tr><th>Date</th><th>Résumé</th><th>Notes échauffement</th><th>Compte-rendu</th></tr>'; table.appendChild(thead); const tbody = document.createElement('tbody'); cycle.sessions.slice().reverse().forEach(s=>{ const tr = document.createElement('tr'); tr.innerHTML = `<td>${s.dateISO||''}</td><td>${(s.objectif||'').slice(0,60)}</td><td>${(s.notes||'').replace(/\n/g,' ' )}</td><td>${(s.journal||'').replace(/\n/g,' ')}</td>`; tbody.appendChild(tr); }); table.appendChild(tbody); node.appendChild(table); }
 
-// selection
 let SELECTED_CYCLE_ID = null;
 async function selectCycle(id){ const db = await load(); const c = db.cycles.find(x=>x.id===id); if(!c) return; SELECTED_CYCLE_ID = id; renderWarmTemplate(c); renderSessions(c); }
 
-// Actions (same as MVP)
+// Actions
 el('saveProfile').onclick = async ()=>{ const db = await load(); db.profile.nom = el('nom').value.trim(); db.profile.prenom = el('prenom').value.trim(); db.profile.classe = el('classe').value.trim(); db.settings.teacher_email = el('teacher_email').value.trim(); if(!db.profile.carnet_startedISO) db.profile.carnet_startedISO = new Date().toISOString(); await save(db); await heartbeat(db); await renderCycles(); showStatus('Profil sauvegardé'); };
 el('createCycle').onclick = async ()=>{ const name = el('cycleName').value.trim(); const apsa = el('apstype').value; if(!name){ showStatus('Donne un nom au cycle', false); return; } const db = await load(); if(db.cycles.length>=3){ showStatus('Max 3 cycles autorisés', false); return; } db.cycles.push({ id:newId(), name, apsa, createdISO:new Date().toISOString(), warmup:{template:''}, sessions:[], audit:{heartbeats:[]} }); await save(db); await renderCycles(); showStatus('Cycle créé'); };
 el('removeCycle').onclick = async ()=>{ if(!SELECTED_CYCLE_ID){ showStatus('Sélectionne un cycle', false); return; } const db = await load(); db.cycles = db.cycles.filter(c=>c.id!==SELECTED_CYCLE_ID); SELECTED_CYCLE_ID=null; await save(db); await renderCycles(); el('sessionsTable').innerHTML=''; showStatus('Cycle supprimé'); };
+
 el('saveWarmTemplate').onclick = async ()=>{ if(!SELECTED_CYCLE_ID){ showStatus('Sélectionne un cycle', false); return; } const db = await load(); const c = db.cycles.find(x=>x.id===SELECTED_CYCLE_ID); c.warmup.template = el('warmTemplate').value || ''; await save(db); showStatus('Modèle d\'échauffement enregistré'); };
-el('applyWarmToNotes').onclick = async ()=>{ if(!SELECTED_CYCLE_ID){ showStatus('Sélectionne un cycle', false); return; } const db = await load(); const c = db.cycles.find(x=>x.id===SELECTED_CYCLE_ID); const txt = c.warmup.template || ''; el('sessNotes').value = (el('sessNotes').value? el('sessNotes').value + '\n\n' : '') + txt; showStatus('Échauffement inséré dans notes'); };
-el('saveSession').onclick = async ()=>{ if(!SELECTED_CYCLE_ID){ showStatus('Sélectionne un cycle', false); return; } const objectif = el('sessObjectif').value.trim(); const volVal = el('sessVolumeValue').value; const volUnit = el('sessVolumeUnit').value; const rpe = el('sessRpe').value; const ressenti = el('sessRessenti').value; const notes = el('sessNotes').value.trim(); const journal = el('sessJournal').value.trim(); if(!objectif || !volVal || rpe==='') { showStatus('Objectif / volume / RPE requis', false); return; } const db = await load(); const c = db.cycles.find(x=>x.id===SELECTED_CYCLE_ID); const today = new Date().toISOString().slice(0,10); const nowISO = new Date().toISOString(); const s = { id:newId(), dateISO: today, objectif, volume:{value:Number(volVal), unit:volUnit}, rpe:Number(rpe), ressenti, notes, journal, created_atISO: nowISO, edited_atISO: nowISO }; c.sessions.push(s); if(!c.firstSessionRecordedISO) c.firstSessionRecordedISO = nowISO; await save(db); await heartbeat(db); await renderSessions(c); showStatus('Séance enregistrée (date forcée)'); };
+el('applyWarmToNotes').onclick = async ()=>{ if(!SELECTED_CYCLE_ID){ showStatus('Sélectionne un cycle', false); return; } const db = await load(); const c = db.cycles.find(x=>x.id===SELECTED_CYCLE_ID); const txt = c.warmup.template || ''; el('sessWarmup').value = (el('sessWarmup').value? el('sessWarmup').value + '\n\n' : '') + txt; showStatus('Échauffement inséré dans le bloc échauffement'); };
+
+// NEW saveSession (simplified large blocks)
+el('saveSession').onclick = async ()=>{
+  if(!SELECTED_CYCLE_ID){ showStatus('Sélectionne un cycle', false); return; }
+  const warmupText = el('sessWarmup').value.trim();
+  const reportText = el('sessReport').value.trim();
+  if(!warmupText && !reportText){ showStatus('Remplis l\'échauffement ou le compte-rendu avant d\'enregistrer', false); return; }
+  const db = await load(); const c = db.cycles.find(x=>x.id===SELECTED_CYCLE_ID);
+  const today = new Date().toISOString().slice(0,10);
+  const nowISO = new Date().toISOString();
+  const s = { id:newId(), dateISO: today, objectif: reportText.substring(0,140), volume: { value: null, unit: '' }, rpe: null, ressenti: '', notes: warmupText, journal: reportText, created_atISO: nowISO, edited_atISO: nowISO };
+  c.sessions.push(s);
+  if(!c.firstSessionRecordedISO) c.firstSessionRecordedISO = nowISO;
+  await save(db); await heartbeat(db); await renderSessions(c);
+  el('sessWarmup').value = ''; el('sessReport').value = '';
+  showStatus('Séance enregistrée (date forcée)');
+};
+
 el('duplicateLast').onclick = async ()=>{ if(!SELECTED_CYCLE_ID){ showStatus('Sélectionne un cycle', false); return; } const db = await load(); const c = db.cycles.find(x=>x.id===SELECTED_CYCLE_ID); const last = c.sessions[c.sessions.length-1]; if(!last){ showStatus('Aucune séance à dupliquer', false); return; } const copy = Object.assign({}, last, { id:newId(), dateISO:new Date().toISOString().slice(0,10), created_atISO:new Date().toISOString(), edited_atISO:new Date().toISOString() }); c.sessions.push(copy); await save(db); await heartbeat(db); await renderSessions(c); showStatus('Dernière séance dupliquée'); };
 
-// Exports
+// Exports & share functions (kept minimal for brevity)
 function csvEscape(v){ return '"' + (v??'').toString().replace(/"/g,'""') + '"'; }
-async function buildCSV(db, cycle){ const head = ['nom','prenom','classe','cycle','carnet_started','active_days','date','objectif','volume_value','volume_unit','rpe','ressenti','notes','journal','created_at','edited_at']; const rows = (cycle.sessions||[]).map(s=>[ db.profile.nom, db.profile.prenom, db.profile.classe, cycle.name, db.profile.carnet_startedISO, (cycle.audit?.heartbeats||[]).length, s.dateISO, s.objectif, s.volume.value, s.volume.unit, s.rpe, s.ressenti, (s.notes||'').replace(/\n/g,' '),(s.journal||'').replace(/\n/g,' '), s.created_atISO, s.edited_atISO ]); const csv = [head].concat(rows).map(r=>r.map(csvEscape).join(';')).join('\n'); return new Blob([csv], { type: 'text/csv;charset=utf-8' }); }
+async function buildCSV(db, cycle){ const head = ['nom','prenom','classe','cycle','carnet_started','active_days','date','objectif','notes','journal','created_at','edited_at']; const rows = (cycle.sessions||[]).map(s=>[ db.profile.nom, db.profile.prenom, db.profile.classe, cycle.name, db.profile.carnet_startedISO, (cycle.audit?.heartbeats||[]).length, s.dateISO, s.objectif, (s.notes||'').replace(/\n/g,' '),(s.journal||'').replace(/\n/g,' '), s.created_atISO, s.edited_atISO ]); const csv = [head].concat(rows).map(r=>r.map(csvEscape).join(';')).join('\n'); return new Blob([csv], { type: 'text/csv;charset=utf-8' }); }
 async function buildJSON(db, cycle){ return new Blob([JSON.stringify({ profile:db.profile, cycle }, null, 2)], { type:'application/json' }); }
 function downloadBlob(blob, filename){ const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
 el('downloadCsv').onclick = async ()=>{ const db = await load(); if(!SELECTED_CYCLE_ID){ showStatus('Sélectionne un cycle', false); return; } const cycle = db.cycles.find(c=>c.id===SELECTED_CYCLE_ID); const blob = await buildCSV(db, cycle); downloadBlob(blob, `${db.profile.nom || 'eleve'}_${cycle.name}_carnet.csv`); showStatus('CSV téléchargé'); };
 el('downloadJson').onclick = async ()=>{ const db = await load(); if(!SELECTED_CYCLE_ID){ showStatus('Sélectionne un cycle', false); return; } const cycle = db.cycles.find(c=>c.id===SELECTED_CYCLE_ID); const blob = await buildJSON(db, cycle); downloadBlob(blob, `${db.profile.nom || 'eleve'}_${cycle.name}_carnet.json`); showStatus('JSON téléchargé'); };
 
-// Share
 el('shareFiles').onclick = async ()=>{ const db = await load(); if(!SELECTED_CYCLE_ID){ showStatus('Sélectionne un cycle', false); return; } const cycle = db.cycles.find(c=>c.id===SELECTED_CYCLE_ID); const csv = await buildCSV(db, cycle); const json = await buildJSON(db, cycle); const files = [ new File([csv], 'carnet.csv', { type: 'text/csv' }), new File([json], 'carnet.json', { type: 'application/json' }) ]; const subj = `Carnet — ${db.profile.nom} ${db.profile.prenom} — ${db.profile.classe} — ${cycle.name} — ${new Date().toISOString().slice(0,10)}`; const text = `Carnet de ${db.profile.nom} ${db.profile.prenom} (classe ${db.profile.classe}) pour le cycle ${cycle.name}.`; if(navigator.canShare && navigator.canShare({ files })){ try{ await navigator.share({ title: subj, text, files }); showStatus('Partagé via Web Share'); return; }catch(e){ console.log(e); } } const body = encodeURIComponent(text + '\n\nFichiers joints en téléchargement.'); const to = encodeURIComponent(db.settings.teacher_email || ''); window.open(`mailto:${to}?subject=${encodeURIComponent(subj)}&body=${body}`,'_blank'); downloadBlob(csv, 'carnet.csv'); downloadBlob(json, 'carnet.json'); showStatus('Fallback mailto + fichiers téléchargés'); };
 
 el('sendWebhook').onclick = async ()=>{ const db = await load(); if(!SELECTED_CYCLE_ID){ showStatus('Sélectionne un cycle', false); return; } const cycle = db.cycles.find(c=>c.id===SELECTED_CYCLE_ID); try{ const payload = { _token: SECRET_TOKEN, nom: db.profile.nom, prenom: db.profile.prenom, classe: db.profile.classe, cycle: cycle.name, client_dateISO: new Date().toISOString().slice(0,10), session_count: cycle.sessions.length, active_days: cycle.audit?.heartbeats || [], sessions: cycle.sessions, notes: '' }; const res = await fetch(APPS_SCRIPT_WEBHOOK, { method:'POST', mode:'cors', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(payload) }); const j = await res.json(); if(j.ok){ showStatus('Envoyé au serveur — horodatage serveur OK'); } else { showStatus('Erreur serveur: '+(j.error||'unknown'), false); } }catch(err){ showStatus('Erreur envoi webhook: '+err.message, false); } };
@@ -210,9 +222,9 @@ el('sendWebhook').onclick = async ()=>{ const db = await load(); if(!SELECTED_CY
 el('importJson').onclick = ()=>{ const inp = document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange = async e=>{ const f = e.target.files[0]; if(!f) return; const txt = await f.text(); try{ const obj = JSON.parse(txt); await save(obj); await renderCycles(); showStatus('Import OK — pense à vérifier ton profil'); }catch(err){ showStatus('Import JSON invalide', false); } }; document.body.appendChild(inp); inp.click(); inp.remove(); };
 
 // init
-(async function init(){ const db = await load(); el('nom').value = db.profile.nom || ''; el('prenom').value = db.profile.prenom || ''; el('classe').value = db.profile.classe || ''; el('teacher_email').value = db.settings.teacher_email || ''; el('sessRpe').value = ''; await renderCycles(); await heartbeat(db); const first = db.cycles[0]; if(first){ selectCycle(first.id); } })();
+(async function init(){ const db = await load(); el('nom').value = db.profile.nom || ''; el('prenom').value = db.profile.prenom || ''; el('classe').value = db.profile.classe || ''; el('teacher_email').value = db.settings.teacher_email || ''; await renderCycles(); await heartbeat(db); const first = db.cycles[0]; if(first){ selectCycle(first.id); } })();
 
-// Service worker registration
+// service worker register
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>console.log('sw reg failed')); }
 </script>
 

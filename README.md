@@ -1,28 +1,27 @@
-# ScanCarnet - Carnet d'entraînement (PWA MVP)
+# ScanCarnet v2 - Carnet d'entraînement (PWA MVP)
 
-ScanCarnet est la version matérielle du carnet d'entraînement pour élèves — simple, local-first et prêt pour l'évaluation.
+Mises à jour : formulaire simplifié pour la séance — deux grands blocs :
+- Échauffement (multi-lignes) — texte modifiable, lié au cycle si souhaité
+- Compte-rendu / séance — grand bloc texte libre
 
-## Contenu
-- index.html : interface principale (profil, cycles, échauffement, séances, export, partage).
-- sw.js : service worker (cache-first).
-- manifest.webmanifest : PWA manifest.
-- apps_script.txt : code Apps Script (doPost) à coller dans un Google Sheet si tu veux centraliser les envois.
-- README.md : ce fichier.
+La date est figée automatiquement lors de l'enregistrement (impossible à modifier par l'élève).
 
-## Pages de garde & pied de page
-L'application affiche maintenant une page de garde (splash) avec le nom **ScanCarnet**.
-Le pied de page montre : "ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG".
+## Contenu du ZIP
+- index.html
+- sw.js
+- manifest.webmanifest
+- apps_script.txt (code Apps Script doPost)
+- README.md
 
 ## Déploiement rapide
-1. Crée un repo GitHub (ex: `ScanCarnet`) et pousse ces fichiers sur la branche `main`.
-2. Active GitHub Pages (branch `main` / folder `/root`).
-3. Ouvre l'URL et sur iPad : Partager → Ajouter à l'écran d'accueil pour installer la PWA.
+1. Crée un repo GitHub et pousse ces fichiers sur la branche main.
+2. Active GitHub Pages (branch main / root).
+3. Ouvre l'URL, sur iPad : Partager → Ajouter à l'écran d'accueil.
 
-## Apps Script (optionnel)
-- Ouvre Google Sheets → Extensions → Apps Script, colle le contenu de `apps_script.txt`.
-- Déploie comme Web App (Exécuter en tant que : Moi, Accès : Anyone).
-- Copie l'URL et mets-la dans `index.html` variable `APPS_SCRIPT_WEBHOOK`. Replace aussi `SECRET_TOKEN`.
+## Notes
+- Si tu as toujours l'erreur « Objectif / volume / RPE requis » c'était la validation précédente — elle est supprimée dans cette version.
+- Sauvegarde régulière recommandée (bouton Télécharger .json) si les iPad sont configurés pour nettoyer les données.
 
-## Notes RGPD
-Informe élèves/parents que des timestamps et données seront collectées et conservées. Prévois une politique de conservation.
-
+## RPE
+RPE = "Rate of Perceived Exertion" — échelle d'effort perçu. Ici on utilisait une échelle 0-10.
+En bref : c'est la note que l'élève donne à l'effort. Pas obligatoire dans cette version simplifiée.
