@@ -1,12 +1,9 @@
-ScanCarnet - Fixed package ready to push to GitHub
-- Unregisters any old service worker on load and clears caches to avoid stale JS.
-- Index.html has robust event listener attachment after DOMContentLoaded.
-- Exports: CSV (includes warmup) and PDF (html2canvas + jsPDF).
-- Files included: index.html, sw.js, manifest.webmanifest, README.txt
+ScanCarnet v8 - UI polish
+- Prettier help button (pill) on splash
+- Profile page visually improved with gradient header and nicer inputs
+- Functionality unchanged (Start works, CSV/PDF export, cycles, sessions)
+- Includes sw.js and manifest to ensure old service workers are replaced
 
-To deploy:
-1) Replace the repo contents with these files (upload or git push).
-2) If a previous service worker was registered, you (or your students) may need to clear site data in the browser or open the URL with ?no-cache=1.
-3) After deployment, test: Démarrer → Profil → Cycle → Nouvelle séance → Export CSV/PDF.
-
-If you want, I can also add icon PNG files (192 & 512) into the ZIP.
+Deployment:
+Replace your repo contents with these files, commit and push to main branch.
+If you still see old behaviour, clear site data / unregister service worker in browser.

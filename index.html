@@ -5,20 +5,26 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>ScanCarnet</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<meta name="robots" content="noindex">
 <style>
   :root{
-    --bg:#f7fbff; --panel:#ffffff; --primary:#0066ff; --muted:#6b7280;
-    --radius:14px; --shadow:0 12px 30px rgba(11,35,88,0.08);
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --primary:#0a58ff;
+    --accent1:#ff7a7a;
+    --accent2:#6b8bff;
+    --muted:#6b7280;
+    --success:#34c759;
+    --radius:14px;
+    --shadow: 0 12px 30px rgba(10,20,40,0.08);
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,system-ui,Roboto,Arial;background:linear-gradient(180deg,#f7fbff,#fff);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;color:#062030}
+  body{margin:0;font-family:Inter,system-ui,Roboto,Arial;background:linear-gradient(180deg,var(--bg),#ffffff);color:#062030;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
   .app{width:100%;max-width:920px}
-  .card{background:var(--panel);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);text-align:center}
-  .logo{width:84px;height:84px;border-radius:18px;background:linear-gradient(135deg,#007bff,#00c6ff);display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:28px;margin:0 auto 12px}
+  .card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);text-align:center}
+  .logo{width:84px;height:84px;border-radius:18px;background:linear-gradient(135deg,var(--primary),#00c6ff);display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:28px;margin:0 auto 12px}
   h1{margin:6px 0 0 0;font-size:28px}
   .subtitle{color:var(--muted);margin-top:6px}
-  .bigbtn{min-width:260px;padding:14px 18px;border-radius:12px;border:0;font-weight:800;font-size:1.05rem;color:white;cursor:pointer;background:linear-gradient(90deg,#34c759,#00d4a6);box-shadow:0 8px 20px rgba(10,88,255,0.12);}
+  .bigbtn{min-width:260px;padding:14px 18px;border-radius:12px;border:0;font-weight:800;font-size:1.05rem;color:white;cursor:pointer;background:linear-gradient(90deg,var(--success),#00d4a6);box-shadow:0 8px 20px rgba(10,88,255,0.12);}
   .smallbtn{margin-top:12px;background:#fff;border:1px solid rgba(0,0,0,0.06);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer;font-weight:600}
   .ghost{background:#fff;color:var(--primary);border:1px solid rgba(0,102,255,0.08);padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:600}
   .hidden{display:none}
@@ -26,59 +32,82 @@
   .exports button{background:transparent;border:1px solid rgba(255,255,255,0.12);color:white;padding:8px 10px;border-radius:10px;font-weight:700;cursor:pointer}
   .csv{background:linear-gradient(90deg,#ffbf00,#ff7a00);border:none;padding:10px 12px;border-radius:10px}
   .pdf{background:linear-gradient(90deg,#ec4899,#8b5cf6);border:none;padding:10px 12px;border-radius:10px}
-  input,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #eef6ff;font-size:1rem;margin-top:8px}
-  textarea{min-height:120px;white-space:pre-wrap}
+  input,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #eef6ff;font-size:1rem;margin-top:8px;background:transparent}
+  textarea{min-height:140px;white-space:pre-wrap}
   .center-col{display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center}
   footer{margin-top:18px;text-align:center;color:var(--muted);font-size:0.9rem}
-  @media (max-width:720px){ .bigbtn{min-width:200px} .exports{right:12px;bottom:12px} }
+  /* Fancy help button */
+  .help-pill{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:999px;background:linear-gradient(90deg,#ffffff,rgba(255,255,255,0.85));border:1px solid rgba(10,88,255,0.08);cursor:pointer;box-shadow:0 6px 18px rgba(10,88,255,0.06);font-weight:700;color:var(--primary)}
+  .help-icon{width:18px;height:18px;border-radius:6px;display:inline-grid;place-items:center;background:linear-gradient(90deg,var(--accent1),#ffbf69);color:white;font-size:12px;font-weight:800}
+  /* Profile card visual */
+  .profile-card{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(10,88,255,0.06),#fff);border:1px solid rgba(10,88,255,0.06)}
+  .profile-hr{height:6px;width:70px;border-radius:6px;background:linear-gradient(90deg,var(--primary),#00c6ff);margin-bottom:6px}
+  .input-row{display:flex;gap:10px;width:100%}
+  .input-row input{flex:1}
+  .muted{color:var(--muted)}
+  @media (max-width:720px){ .logo{width:64px;height:64px} .bigbtn{min-width:200px} .exports{right:12px;bottom:12px} .input-row{flex-direction:column} }
 </style>
 </head>
 <body>
   <div class="app">
+    <!-- Splash -->
     <div class="card" id="panel-splash">
       <div class="logo">SC</div>
       <h1>ScanCarnet</h1>
       <div class="subtitle">Carnet d'entraînement</div>
       <div style="height:14px"></div>
       <button id="btnStart" class="bigbtn">Démarrer</button>
-      <div style="height:8px"></div>
+      <div style="height:10px"></div>
       <div class="center-col">
-        <div style="display:flex;gap:10px">
-          <button id="btnHelp" class="ghost" style="font-size:0.9rem;padding:6px 10px">Aide</button>
-          <button id="btnResetTop" class="ghost" style="font-size:0.9rem;padding:6px 10px">Réinitialiser</button>
+        <!-- prettier help pill and small reset link -->
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="btnHelp" class="help-pill" aria-label="Aide">
+            <span class="help-icon">?</span>
+            Aide
+          </button>
+          <button id="btnResetTop" class="smallbtn">Réinitialiser</button>
         </div>
       </div>
     </div>
 
+    <!-- Profile (prettier) -->
     <div class="card hidden" id="panel-profile">
-      <h2>Profil élève</h2>
-      <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
-        <input id="nom" placeholder="Nom" style="width:28%"/>
-        <input id="prenom" placeholder="Prénom" style="width:28%"/>
-        <input id="classe" placeholder="Classe" style="width:28%"/>
+      <div class="profile-card" style="width:100%;max-width:760px;margin:0 auto">
+        <div class="profile-hr"></div>
+        <h2 style="margin:0">Profil élève</h2>
+        <div class="muted">Renseigne tes informations (sera inclus dans l'export)</div>
+        <div style="height:6px"></div>
+        <div class="input-row">
+          <input id="nom" placeholder="Nom" />
+          <input id="prenom" placeholder="Prénom" />
+          <input id="classe" placeholder="Classe" />
+        </div>
+        <div style="height:8px"></div>
+        <div style="display:flex;gap:10px;justify-content:center;width:100%">
+          <button id="saveProfile" class="bigbtn" style="background:linear-gradient(90deg,var(--primary),#00a0ff)">Sauvegarder</button>
+          <button id="backToSplash" class="smallbtn">Retour</button>
+        </div>
       </div>
-      <div style="height:12px"></div>
-      <button id="saveProfile" class="bigbtn" style="background:linear-gradient(90deg,#007bff,#0096ff)">Sauvegarder</button>
-      <div style="height:8px"></div>
-      <button id="backToSplash" class="smallbtn">Retour</button>
     </div>
 
+    <!-- Dashboard -->
     <div class="card hidden" id="panel-dashboard">
       <h2 id="profileLine">—</h2>
       <div class="subtitle" style="margin-bottom:12px">Ton carnet — actions</div>
       <div style="display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center">
-        <button id="btnCycle" class="bigbtn" style="background:linear-gradient(90deg,#007bff,#0096ff)">Cycle</button>
-        <button id="btnWarmup" class="bigbtn" style="background:linear-gradient(90deg,#ff7a7a,#ffb86b)">Échauffement</button>
-        <button id="btnNew" class="bigbtn" style="background:linear-gradient(90deg,#34c759,#00d4a6)">Nouvelle séance</button>
-        <button id="btnList" class="bigbtn" style="background:linear-gradient(90deg,#9b5cff,#6b8bff)">Voir séances</button>
+        <button id="btnCycle" class="bigbtn" style="background:linear-gradient(90deg,var(--primary),#0096ff)">Cycle</button>
+        <button id="btnWarmup" class="bigbtn" style="background:linear-gradient(90deg,var(--accent1),#ffb86b)">Échauffement</button>
+        <button id="btnNew" class="bigbtn" style="background:linear-gradient(90deg,var(--success),#00d4a6)">Nouvelle séance</button>
+        <button id="btnList" class="bigbtn" style="background:linear-gradient(90deg,var(--accent2),#6b8bff)">Voir séances</button>
       </div>
     </div>
 
+    <!-- Cycle / Warmup / New / List panels (unchanged functionally) -->
     <div class="card hidden" id="panel-cycle">
       <h3>Cycle (APSA)</h3>
       <input id="cycleName" placeholder="Ex : Badminton" />
       <div style="height:8px"></div>
-      <button id="createCycle" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,#007bff,#0096ff)">Créer / Sélectionner</button>
+      <button id="createCycle" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,var(--primary),#0096ff)">Créer / Sélectionner</button>
       <div id="cycleList" style="margin-top:12px;text-align:left"></div>
       <div style="height:8px"></div>
       <button id="cycleBack" class="smallbtn">Retour</button>
@@ -89,7 +118,7 @@
       <div id="warmupCycleName" class="subtitle">—</div>
       <textarea id="warmText" placeholder="- Footing 8 min"></textarea>
       <div style="height:8px"></div>
-      <button id="saveWarm" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,#ff7a7a,#ffb86b)">Enregistrer</button>
+      <button id="saveWarm" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,var(--accent1),#ffb86b)">Enregistrer</button>
       <div style="height:8px"></div>
       <button id="warmBack" class="smallbtn">Retour</button>
     </div>
@@ -99,7 +128,7 @@
       <div class="subtitle">Date ajoutée automatiquement (Europe/Luxembourg).</div>
       <textarea id="sessionText" placeholder="Décris la séance..."></textarea>
       <div style="height:8px"></div>
-      <button id="saveSession" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,#34c759,#00d4a6)">Enregistrer séance</button>
+      <button id="saveSession" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,var(--success),#00d4a6)">Enregistrer séance</button>
       <div style="height:8px"></div>
       <button id="sessionBack" class="smallbtn">Retour</button>
     </div>
@@ -119,12 +148,13 @@
     <button class="pdf" id="btnExportPDF">Générer PDF</button>
   </div>
 
+  <!-- Modal help -->
   <div id="modalHelp" class="hidden" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(3,7,18,0.45);z-index:100;padding:20px">
     <div style="background:#fff;padding:18px;border-radius:12px;max-width:720px;box-shadow:0 10px 30px rgba(0,0,0,0.12);text-align:left">
       <div style="display:flex;justify-content:space-between;align-items:center"><strong>Aide — ScanCarnet</strong><button id="closeHelp" class="ghost">Fermer</button></div>
       <div style="height:8px"></div>
       <ol style="padding-left:18px">
-        <li>Démarrer → Remplis ton profil.</li>
+        <li>Appuie sur <strong>Démarrer</strong> puis remplis ton profil.</li>
         <li>Créer / sélectionner un cycle (ex : Badminton).</li>
         <li>Ajouter un échauffement type si tu veux.</li>
         <li>Nouvelle séance → écrire → Enregistrer (date figée).</li>
@@ -138,7 +168,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-// Important: attempt to unregister any old service worker + clear caches to avoid stale app issues
+// Unregister old SW and clear caches to avoid stale versions
 (async function unregisterOldSW(){
   try{
     if('serviceWorker' in navigator){
@@ -152,8 +182,7 @@
   }catch(e){ console.warn('sw cleanup failed', e); }
 })();
 
-// Storage helpers
-const STORAGE_KEY = 'scancarnet_release_v1';
+const STORAGE_KEY = 'scancarnet_v8';
 const $ = id => document.getElementById(id);
 function loadDB(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); }catch(e){ return {}; } }
 function saveDB(db){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
@@ -165,17 +194,15 @@ function todayLux(){ try{ return new Date().toLocaleDateString('sv-SE',{timeZone
 
 let DB = getDB();
 
-function hideAll(){ ['panel-splash','panel-profile','panel-dashboard','panel-cycle','panel-warmup','panel-newsession','panel-list'].forEach(id=>{ const el=$(id); if(el) el.classList.add('hidden'); }); }
-function showPanel(id){ hideAll(); const el=$(id); if(el) el.classList.remove('hidden'); }
-function updateProfileLine(){ const p = DB.profile||{}; const el=$('profileLine'); if(el) el.textContent = `${p.nom||'—'} ${p.prenom||''} — ${p.classe||''}`; }
+function hideAll(){ ['panel-splash','panel-profile','panel-dashboard','panel-cycle','panel-warmup','panel-newsession','panel-list'].forEach(id=>{ const el = $(id); if(el) el.classList.add('hidden'); }); }
+function showPanel(id){ hideAll(); const el = $(id); if(el) el.classList.remove('hidden'); }
+function updateProfileLine(){ const p = DB.profile||{}; const el = $('profileLine'); if(el) el.textContent = `${p.nom||'—'} ${p.prenom||''} — ${p.classe||''}`; }
 
-// Safe attach after DOM ready
 document.addEventListener('DOMContentLoaded', ()=>{
-  // Splash buttons
+  // Splash interactions
   const btnStart = $('btnStart'); if(btnStart) btnStart.addEventListener('click', ()=> showPanel('panel-profile'));
-
-  const btnHelp = $('btnHelp'); if(btnHelp) btnHelp.addEventListener('click', ()=> { const m=$('modalHelp'); if(m){ m.style.display='flex'; m.classList.remove('hidden'); } });
-  const closeHelp = $('closeHelp'); if(closeHelp) closeHelp.addEventListener('click', ()=> { const m=$('modalHelp'); if(m){ m.style.display='none'; m.classList.add('hidden'); } });
+  const btnHelp = $('btnHelp'); if(btnHelp) btnHelp.addEventListener('click', ()=> { const m = $('modalHelp'); if(m){ m.style.display='flex'; m.classList.remove('hidden'); } });
+  const closeHelp = $('closeHelp'); if(closeHelp) closeHelp.addEventListener('click', ()=> { const m = $('modalHelp'); if(m){ m.style.display='none'; m.classList.add('hidden'); } });
   const btnResetTop = $('btnResetTop'); if(btnResetTop) btnResetTop.addEventListener('click', ()=> { if(confirm('Supprimer toutes les données locales ?')){ localStorage.removeItem(STORAGE_KEY); DB = defaultDB(); saveDB(DB); location.reload(); } });
 
   // Profile save
@@ -223,7 +250,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const sessionBack = $('sessionBack'); if(sessionBack) sessionBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
   const listBack = $('listBack'); if(listBack) listBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
 
-  // Exports
+  // Exports CSV + PDF (include warmup)
   const btnExportCSV = $('btnExportCSV'); if(btnExportCSV) btnExportCSV.addEventListener('click', ()=> {
     const d=getDB(); const c=d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; }
     const head=['nom','prenom','classe','cycle','date','texte','echauffement','created_at'];
@@ -243,36 +270,24 @@ document.addEventListener('DOMContentLoaded', ()=>{
     try{
       const canvas = await html2canvas(wrapper, { scale: 2 });
       const imgData = canvas.toDataURL('image/png');
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ unit:'pt', format:'a4' });
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const ratio = canvas.width / pageWidth;
-      const imgHeightPt = canvas.height / ratio;
+      const { jsPDF } = window.jspdf; const pdf = new jsPDF({ unit:'pt', format:'a4' });
+      const pageWidth = pdf.internal.pageSize.getWidth(); const ratio = canvas.width / pageWidth; const imgHeightPt = canvas.height / ratio;
       pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeightPt);
       const blob = pdf.output('blob');
       const filename = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.pdf`;
       const file = new File([blob], filename, { type:'application/pdf' });
-      if(navigator.canShare && navigator.canShare({ files: [file] })){
-        await navigator.share({ files:[file], title: filename, text:'Carnet ScanCarnet' });
-      } else {
-        const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); alert('PDF généré et téléchargé (tu peux l\'envoyer par AirDrop ou mail).');
-      }
+      if(navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files:[file], title: filename, text:'Carnet ScanCarnet' }); } else { const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); alert('PDF généré et téléchargé (tu peux l\'envoyer par AirDrop ou mail).'); }
     }catch(err){ console.error(err); alert('Erreur génération PDF: '+(err.message||err)); }
     finally{ wrapper.remove(); }
   });
 
-  // init UI values
-  $('nom').value = DB.profile.nom || '';
-  $('prenom').value = DB.profile.prenom || '';
-  $('classe').value = DB.profile.classe || '';
+  // init profile inputs
+  $('nom').value = DB.profile.nom || ''; $('prenom').value = DB.profile.prenom || ''; $('classe').value = DB.profile.classe || '';
   updateProfileLine();
-
 }); // DOMContentLoaded end
 
-// renderCycles and renderSessions available outside listener
 function renderCycles(){
-  const node = document.getElementById('cycleList'); if(!node) return;
-  node.innerHTML = '';
+  const node = document.getElementById('cycleList'); if(!node) return; node.innerHTML = '';
   const d = getDB(); if(!d.cycles || d.cycles.length===0){ node.innerHTML = '<div style="color:#6b7280">Aucun cycle</div>'; return; }
   d.cycles.forEach(c=>{
     const el = document.createElement('div'); el.style.padding='8px'; el.style.borderBottom='1px solid #f1f7ff';
