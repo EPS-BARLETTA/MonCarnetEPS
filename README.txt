@@ -1,15 +1,9 @@
-ScanCarnet-local-v9
--------------------
-Local-only version (no Google, no server).
-
-Features:
-- Uses IndexedDB for reliable local storage (migration from previous localStorage if present).
-- Offline-first: everything saved locally on device (iPad/phone/PC).
-- Fixed, immutable timestamps: dateISO (Europe/Luxembourg) + created_atISO (UTC) saved at each session creation.
-- Export CSV (includes warmup), Generate PDF, Backup JSON (download), Reset/Clear all.
-- No server or Google integration to respect GDPR / local-only policy.
-- Includes minimal sw.js and manifest.webmanifest to avoid stale SW issues and support 'Add to home screen'.
+ScanCarnet v8 - UI polish
+- Prettier help button (pill) on splash
+- Profile page visually improved with gradient header and nicer inputs
+- Functionality unchanged (Start works, CSV/PDF export, cycles, sessions)
+- Includes sw.js and manifest to ensure old service workers are replaced
 
 Deployment:
-- Replace repo files with index.html, sw.js, manifest.webmanifest, README.txt (and optional icons).
-- After deploy, if old service worker exists on clients, they should unregister it (DevTools -> Application -> Service Workers -> Unregister) or clear site data on iPad Safari.
+Replace your repo contents with these files, commit and push to main branch.
+If you still see old behaviour, clear site data / unregister service worker in browser.

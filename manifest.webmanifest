@@ -1,5 +1,5 @@
 {
-  "name": "ScanCarnet Local",
+  "name": "ScanCarnet",
   "short_name": "ScanCarnet",
   "start_url": "./index.html",
   "display": "standalone",
