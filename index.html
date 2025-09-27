@@ -3,314 +3,392 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>ScanCarnet</title>
+<title>ScanCarnet — local</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#f4f7fb;
-    --card:#ffffff;
-    --primary:#0a58ff;
-    --accent1:#ff7a7a;
-    --accent2:#6b8bff;
-    --muted:#6b7280;
-    --success:#34c759;
-    --radius:14px;
-    --shadow: 0 12px 30px rgba(10,20,40,0.08);
+    --bg:#f4f7fb; --card:#fff; --primary:#0a58ff; --muted:#6b7280; --accent:#ff7a7a;
+    --success:#34c759; --radius:12px; --shadow:0 10px 24px rgba(10,20,40,0.08);
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,system-ui,Roboto,Arial;background:linear-gradient(180deg,var(--bg),#ffffff);color:#062030;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
-  .app{width:100%;max-width:920px}
-  .card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);text-align:center}
-  .logo{width:84px;height:84px;border-radius:18px;background:linear-gradient(135deg,var(--primary),#00c6ff);display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:28px;margin:0 auto 12px}
-  h1{margin:6px 0 0 0;font-size:28px}
+  body{margin:0;font-family:Inter,system-ui,Roboto,Arial;background:linear-gradient(180deg,var(--bg),#fff);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;color:#062030}
+  .app{width:100%;max-width:980px}
+  .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);text-align:center}
+  h1{margin:6px 0;font-size:28px}
+  .logo{width:72px;height:72px;border-radius:14px;background:linear-gradient(135deg,var(--primary),#00c6ff);display:inline-grid;place-items:center;color:white;font-weight:800;font-size:22px;margin:0 auto 8px}
   .subtitle{color:var(--muted);margin-top:6px}
-  .bigbtn{min-width:260px;padding:14px 18px;border-radius:12px;border:0;font-weight:800;font-size:1.05rem;color:white;cursor:pointer;background:linear-gradient(90deg,var(--success),#00d4a6);box-shadow:0 8px 20px rgba(10,88,255,0.12);}
-  .smallbtn{margin-top:12px;background:#fff;border:1px solid rgba(0,0,0,0.06);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer;font-weight:600}
-  .ghost{background:#fff;color:var(--primary);border:1px solid rgba(0,102,255,0.08);padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:600}
-  .hidden{display:none}
-  .exports{position:fixed;right:18px;bottom:18px;background:linear-gradient(135deg,#001d6e,#0047b3);color:white;padding:12px;border-radius:12px;display:flex;gap:8px;align-items:center;z-index:90}
+  .bigbtn{min-width:220px;padding:12px 16px;border-radius:12px;border:0;font-weight:800;font-size:1rem;color:white;cursor:pointer;background:linear-gradient(90deg,var(--success),#00d4a6);box-shadow:0 8px 20px rgba(10,88,255,0.08);}
+  .smallbtn{background:#fff;border:1px solid rgba(0,0,0,0.06);padding:8px 10px;border-radius:10px;color:var(--muted);cursor:pointer;font-weight:700}
+  .ghost{background:#fff;color:var(--primary);border:1px solid rgba(0,102,255,0.08);padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:700}
+  input,textarea,select{width:100%;padding:10px;border-radius:10px;border:1px solid #eef6ff;font-size:1rem;margin-top:8px;background:transparent}
+  textarea{min-height:120px;white-space:pre-wrap}
+  .exports{position:fixed;right:16px;bottom:16px;background:linear-gradient(135deg,#001d6e,#0047b3);color:white;padding:10px;border-radius:12px;display:flex;gap:8px;align-items:center;z-index:90}
   .exports button{background:transparent;border:1px solid rgba(255,255,255,0.12);color:white;padding:8px 10px;border-radius:10px;font-weight:700;cursor:pointer}
-  .csv{background:linear-gradient(90deg,#ffbf00,#ff7a00);border:none;padding:10px 12px;border-radius:10px}
-  .pdf{background:linear-gradient(90deg,#ec4899,#8b5cf6);border:none;padding:10px 12px;border-radius:10px}
-  input,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #eef6ff;font-size:1rem;margin-top:8px;background:transparent}
-  textarea{min-height:140px;white-space:pre-wrap}
-  .center-col{display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center}
-  footer{margin-top:18px;text-align:center;color:var(--muted);font-size:0.9rem}
-  /* Fancy help button */
-  .help-pill{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:999px;background:linear-gradient(90deg,#ffffff,rgba(255,255,255,0.85));border:1px solid rgba(10,88,255,0.08);cursor:pointer;box-shadow:0 6px 18px rgba(10,88,255,0.06);font-weight:700;color:var(--primary)}
-  .help-icon{width:18px;height:18px;border-radius:6px;display:inline-grid;place-items:center;background:linear-gradient(90deg,var(--accent1),#ffbf69);color:white;font-size:12px;font-weight:800}
-  /* Profile card visual */
-  .profile-card{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(10,88,255,0.06),#fff);border:1px solid rgba(10,88,255,0.06)}
-  .profile-hr{height:6px;width:70px;border-radius:6px;background:linear-gradient(90deg,var(--primary),#00c6ff);margin-bottom:6px}
-  .input-row{display:flex;gap:10px;width:100%}
-  .input-row input{flex:1}
+  .csv{background:linear-gradient(90deg,#ffbf00,#ff7a00);border:none;padding:8px 10px;border-radius:10px}
+  .pdf{background:linear-gradient(90deg,#ec4899,#8b5cf6);border:none;padding:8px 10px;border-radius:10px}
+  .center{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .row{display:flex;gap:10px}
   .muted{color:var(--muted)}
-  @media (max-width:720px){ .logo{width:64px;height:64px} .bigbtn{min-width:200px} .exports{right:12px;bottom:12px} .input-row{flex-direction:column} }
+  footer{margin-top:14px;text-align:center;color:var(--muted);font-size:0.9rem}
+  .note{font-size:0.9rem;color:var(--muted);}
+  @media (max-width:720px){ .row{flex-direction:column} .bigbtn{min-width:180px} .exports{right:10px;bottom:10px} }
 </style>
 </head>
 <body>
   <div class="app">
-    <!-- Splash -->
-    <div class="card" id="panel-splash">
+    <div class="card" id="splash">
       <div class="logo">SC</div>
       <h1>ScanCarnet</h1>
-      <div class="subtitle">Carnet d'entraînement</div>
+      <div class="subtitle">Carnet d'entraînement — local</div>
       <div style="height:14px"></div>
-      <button id="btnStart" class="bigbtn">Démarrer</button>
+      <button id="startBtn" class="bigbtn">Démarrer</button>
       <div style="height:10px"></div>
-      <div class="center-col">
-        <!-- prettier help pill and small reset link -->
-        <div style="display:flex;gap:8px;align-items:center">
-          <button id="btnHelp" class="help-pill" aria-label="Aide">
-            <span class="help-icon">?</span>
-            Aide
-          </button>
-          <button id="btnResetTop" class="smallbtn">Réinitialiser</button>
+      <div class="center">
+        <div class="row">
+          <button id="helpBtn" class="ghost">Aide</button>
+          <button id="resetBtn" class="smallbtn">Réinitialiser</button>
         </div>
+        <div class="note">Toutes les données restent **locales** — pas d'envoi Google.</div>
       </div>
     </div>
 
-    <!-- Profile (prettier) -->
-    <div class="card hidden" id="panel-profile">
-      <div class="profile-card" style="width:100%;max-width:760px;margin:0 auto">
-        <div class="profile-hr"></div>
-        <h2 style="margin:0">Profil élève</h2>
-        <div class="muted">Renseigne tes informations (sera inclus dans l'export)</div>
-        <div style="height:6px"></div>
-        <div class="input-row">
-          <input id="nom" placeholder="Nom" />
-          <input id="prenom" placeholder="Prénom" />
-          <input id="classe" placeholder="Classe" />
-        </div>
-        <div style="height:8px"></div>
-        <div style="display:flex;gap:10px;justify-content:center;width:100%">
-          <button id="saveProfile" class="bigbtn" style="background:linear-gradient(90deg,var(--primary),#00a0ff)">Sauvegarder</button>
-          <button id="backToSplash" class="smallbtn">Retour</button>
-        </div>
+    <div class="card hidden" id="profilePanel">
+      <h2>Profil élève</h2>
+      <div class="muted">Nom / Prénom / Classe (inclus dans exports)</div>
+      <div style="height:8px"></div>
+      <div class="row">
+        <input id="nom" placeholder="Nom" />
+        <input id="prenom" placeholder="Prénom" />
+        <input id="classe" placeholder="Classe" />
+      </div>
+      <div style="height:10px"></div>
+      <div class="row" style="justify-content:center">
+        <button id="saveProfile" class="bigbtn" style="background:linear-gradient(90deg,var(--primary),#00a0ff)">Sauvegarder</button>
+        <button id="backToSplash" class="smallbtn">Retour</button>
       </div>
     </div>
 
-    <!-- Dashboard -->
-    <div class="card hidden" id="panel-dashboard">
-      <h2 id="profileLine">—</h2>
-      <div class="subtitle" style="margin-bottom:12px">Ton carnet — actions</div>
-      <div style="display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center">
-        <button id="btnCycle" class="bigbtn" style="background:linear-gradient(90deg,var(--primary),#0096ff)">Cycle</button>
-        <button id="btnWarmup" class="bigbtn" style="background:linear-gradient(90deg,var(--accent1),#ffb86b)">Échauffement</button>
-        <button id="btnNew" class="bigbtn" style="background:linear-gradient(90deg,var(--success),#00d4a6)">Nouvelle séance</button>
-        <button id="btnList" class="bigbtn" style="background:linear-gradient(90deg,var(--accent2),#6b8bff)">Voir séances</button>
+    <div class="card hidden" id="dashboard">
+      <h3 id="profileLine">—</h3>
+      <div class="muted">Ton carnet — actions</div>
+      <div style="height:10px"></div>
+      <div class="row" style="justify-content:center">
+        <button id="cycleBtn" class="bigbtn" style="background:linear-gradient(90deg,var(--primary),#0096ff)">Cycle</button>
+        <button id="warmBtn" class="bigbtn" style="background:linear-gradient(90deg,var(--accent),#ffb86b)">Échauffement</button>
+        <button id="newBtn" class="bigbtn" style="background:linear-gradient(90deg,var(--success),#00d4a6)">Nouvelle séance</button>
+        <button id="listBtn" class="bigbtn" style="background:linear-gradient(90deg,#6b8bff,#9b5cff)">Voir séances</button>
       </div>
+      <div style="height:8px"></div>
+      <div class="note">Les dates d'enregistrement sont figées et incluses dans l'export.</div>
     </div>
 
-    <!-- Cycle / Warmup / New / List panels (unchanged functionally) -->
-    <div class="card hidden" id="panel-cycle">
+    <div class="card hidden" id="cyclePanel">
       <h3>Cycle (APSA)</h3>
       <input id="cycleName" placeholder="Ex : Badminton" />
       <div style="height:8px"></div>
-      <button id="createCycle" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,var(--primary),#0096ff)">Créer / Sélectionner</button>
-      <div id="cycleList" style="margin-top:12px;text-align:left"></div>
-      <div style="height:8px"></div>
-      <button id="cycleBack" class="smallbtn">Retour</button>
+      <div class="row" style="justify-content:center">
+        <button id="createCycle" class="bigbtn" style="background:linear-gradient(90deg,var(--primary),#0096ff)">Créer / Sélectionner</button>
+        <button id="cycleBack" class="smallbtn">Retour</button>
+      </div>
+      <div id="cycleList" style="text-align:left;margin-top:12px"></div>
     </div>
 
-    <div class="card hidden" id="panel-warmup">
+    <div class="card hidden" id="warmPanel">
       <h3>Échauffement (lié au cycle)</h3>
-      <div id="warmupCycleName" class="subtitle">—</div>
+      <div id="warmCycleName" class="muted">—</div>
       <textarea id="warmText" placeholder="- Footing 8 min"></textarea>
       <div style="height:8px"></div>
-      <button id="saveWarm" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,var(--accent1),#ffb86b)">Enregistrer</button>
-      <div style="height:8px"></div>
-      <button id="warmBack" class="smallbtn">Retour</button>
+      <div class="row" style="justify-content:center">
+        <button id="saveWarm" class="bigbtn" style="background:linear-gradient(90deg,var(--accent),#ffb86b)">Enregistrer</button>
+        <button id="warmBack" class="smallbtn">Retour</button>
+      </div>
     </div>
 
-    <div class="card hidden" id="panel-newsession">
+    <div class="card hidden" id="newPanel">
       <h3>Nouvelle séance</h3>
-      <div class="subtitle">Date ajoutée automatiquement (Europe/Luxembourg).</div>
+      <div class="muted">Date enregistrée automatiquement (Europe/Luxembourg).</div>
       <textarea id="sessionText" placeholder="Décris la séance..."></textarea>
       <div style="height:8px"></div>
-      <button id="saveSession" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,var(--success),#00d4a6)">Enregistrer séance</button>
-      <div style="height:8px"></div>
-      <button id="sessionBack" class="smallbtn">Retour</button>
+      <div class="row" style="justify-content:center">
+        <button id="saveSession" class="bigbtn" style="background:linear-gradient(90deg,var(--success),#00d4a6)">Enregistrer séance</button>
+        <button id="sessionBack" class="smallbtn">Retour</button>
+      </div>
     </div>
 
-    <div class="card hidden" id="panel-list">
+    <div class="card hidden" id="listPanel">
       <h3>Séances archivées</h3>
-      <div id="sessionsContainer" style="margin-top:12px;text-align:left"></div>
+      <div id="sessions" style="text-align:left;margin-top:12px"></div>
       <div style="height:8px"></div>
-      <button id="listBack" class="smallbtn">Retour</button>
+      <div class="row" style="justify-content:center">
+        <button id="exportBackup" class="smallbtn">Sauvegarder (ZIP JSON)</button>
+        <button id="clearAll" class="smallbtn" style="background:#fff;border:1px solid rgba(255,80,80,0.14);color:#ff3b30">Vider tout</button>
+      </div>
     </div>
 
     <footer>ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</footer>
   </div>
 
   <div class="exports" role="dialog" aria-label="Exports">
-    <button class="csv" id="btnExportCSV">Exporter CSV</button>
-    <button class="pdf" id="btnExportPDF">Générer PDF</button>
+    <button class="csv" id="exportCSV">Exporter CSV</button>
+    <button class="pdf" id="exportPDF">Générer PDF</button>
   </div>
 
-  <!-- Modal help -->
-  <div id="modalHelp" class="hidden" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(3,7,18,0.45);z-index:100;padding:20px">
+  <!-- Help modal -->
+  <div id="helpModal" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(3,7,18,0.45);z-index:100;padding:20px">
     <div style="background:#fff;padding:18px;border-radius:12px;max-width:720px;box-shadow:0 10px 30px rgba(0,0,0,0.12);text-align:left">
       <div style="display:flex;justify-content:space-between;align-items:center"><strong>Aide — ScanCarnet</strong><button id="closeHelp" class="ghost">Fermer</button></div>
       <div style="height:8px"></div>
-      <ol style="padding-left:18px">
+      <ol>
         <li>Appuie sur <strong>Démarrer</strong> puis remplis ton profil.</li>
         <li>Créer / sélectionner un cycle (ex : Badminton).</li>
-        <li>Ajouter un échauffement type si tu veux.</li>
-        <li>Nouvelle séance → écrire → Enregistrer (date figée).</li>
-        <li>Exporter CSV ou PDF (l'échauffement est inclus dans les exports).</li>
+        <li>Ajouter un échauffement type si tu veux — il sera inclus dans l'export.</li>
+        <li>Nouvelle séance → écrire → Enregistrer (date figée automatiquement).</li>
+        <li>Utilise Export CSV ou Générer PDF pour partager le carnet (AirDrop / Mail / Fichiers).</li>
       </ol>
     </div>
   </div>
 
-<!-- libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-// Unregister old SW and clear caches to avoid stale versions
-(async function unregisterOldSW(){
+/* ------------------------ IndexedDB wrapper (simple promise API) ------------------------ */
+const DB_NAME = 'ScanCarnetDB_v1';
+const DB_VERSION = 1;
+const STORE_PROFILE = 'profile';
+const STORE_CYCLES = 'cycles'; // stores cycles with sessions array
+function openDB(){ return new Promise((resolve, reject)=>{
+  const r = indexedDB.open(DB_NAME, DB_VERSION);
+  r.onupgradeneeded = e => {
+    const db = e.target.result;
+    if(!db.objectStoreNames.contains(STORE_PROFILE)) db.createObjectStore(STORE_PROFILE, { keyPath: 'id' });
+    if(!db.objectStoreNames.contains(STORE_CYCLES)) db.createObjectStore(STORE_CYCLES, { keyPath: 'id' });
+  };
+  r.onsuccess = e => resolve(e.target.result);
+  r.onerror = e => reject(e.target.error);
+}); }
+
+function idbGet(store, key){ return openDB().then(db=> new Promise((res, rej)=>{ const tx=db.transaction(store,'readonly'); const st=tx.objectStore(store); const rq=st.get(key); rq.onsuccess=()=>res(rq.result); rq.onerror=()=>rej(rq.error); })); }
+function idbPut(store, obj){ return openDB().then(db=> new Promise((res, rej)=>{ const tx=db.transaction(store,'readwrite'); const st=tx.objectStore(store); const rq=st.put(obj); rq.onsuccess=()=>res(rq.result); rq.onerror=()=>rej(rq.error); })); }
+function idbGetAll(store){ return openDB().then(db=> new Promise((res, rej)=>{ const tx=db.transaction(store,'readonly'); const st=tx.objectStore(store); const rq=st.getAll(); rq.onsuccess=()=>res(rq.result); rq.onerror=()=>rej(rq.error); })); }
+function idbDelete(store, key){ return openDB().then(db=> new Promise((res, rej)=>{ const tx=db.transaction(store,'readwrite'); const st=tx.objectStore(store); const rq=st.delete(key); rq.onsuccess=()=>res(); rq.onerror=()=>rej(rq.error); })); }
+function idbClear(store){ return openDB().then(db=> new Promise((res, rej)=>{ const tx=db.transaction(store,'readwrite'); const st=tx.objectStore(store); const rq=st.clear(); rq.onsuccess=()=>res(); rq.onerror=()=>rej(rq.error); })); }
+
+/* ------------------------ Migration from localStorage if exists ------------------------ */
+const LEGACY_KEY = 'scancarnet_v8';
+async function migrateFromLocalStorage(){
   try{
-    if('serviceWorker' in navigator){
-      const regs = await navigator.serviceWorker.getRegistrations();
-      for(const r of regs){ try{ await r.unregister(); console.log('unregistered sw'); }catch(e){console.warn('sw unregister err',e);} }
+    const raw = localStorage.getItem(LEGACY_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    // migrate profile
+    if(data.profile){
+      await idbPut(STORE_PROFILE, { id: 'profile', ...data.profile });
     }
-    if('caches' in window){
-      const keys = await caches.keys();
-      for(const k of keys){ try{ await caches.delete(k); console.log('deleted cache',k); }catch(e){console.warn('cache delete',e);} }
+    // migrate cycles (if any)
+    if(Array.isArray(data.cycles)){
+      for(const c of data.cycles){
+        await idbPut(STORE_CYCLES, { id: c.id || ('c-'+Math.random().toString(36).slice(2,9)), name: c.name, warmup: c.warmup||'', sessions: c.sessions||[] });
+      }
     }
-  }catch(e){ console.warn('sw cleanup failed', e); }
-})();
+    // clear legacy to avoid repeated migration
+    try{ localStorage.removeItem(LEGACY_KEY); }catch(e){}
+    console.log('migration ok');
+  }catch(e){ console.warn('migration failed', e); }
+}
 
-const STORAGE_KEY = 'scancarnet_v8';
+/* ------------------------ Utilities ------------------------ */
 const $ = id => document.getElementById(id);
-function loadDB(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); }catch(e){ return {}; } }
-function saveDB(db){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
-function defaultDB(){ return { profile:{nom:'',prenom:'',classe:''}, cycles:[], selected:null }; }
-function getDB(){ let d = loadDB(); if(!d || !d.profile){ d = defaultDB(); saveDB(d); } return d; }
-function setDB(d){ saveDB(d); DB = d; }
-function nid(){ return Math.random().toString(36).slice(2,9); }
-function todayLux(){ try{ return new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Luxembourg'}); }catch(e){ return new Date().toISOString().slice(0,10);} }
+function todayLux(){ try{ return new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Luxembourg'}); }catch(e){ return new Date().toISOString().slice(0,10); } }
+function nowISO(){ return new Date().toISOString(); }
+function nid(){ return 'id'+Math.random().toString(36).slice(2,9); }
+function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-let DB = getDB();
+/* ------------------------ App logic (local-only) ------------------------ */
+async function refreshProfileLine(){
+  const p = await idbGet(STORE_PROFILE, 'profile') || { nom:'', prenom:'', classe:'' };
+  $('profileLine').textContent = `${p.nom||'—'} ${p.prenom||''} — ${p.classe||''}`;
+}
 
-function hideAll(){ ['panel-splash','panel-profile','panel-dashboard','panel-cycle','panel-warmup','panel-newsession','panel-list'].forEach(id=>{ const el = $(id); if(el) el.classList.add('hidden'); }); }
-function showPanel(id){ hideAll(); const el = $(id); if(el) el.classList.remove('hidden'); }
-function updateProfileLine(){ const p = DB.profile||{}; const el = $('profileLine'); if(el) el.textContent = `${p.nom||'—'} ${p.prenom||''} — ${p.classe||''}`; }
+function hideAll(){ ['splash','profilePanel','dashboard','cyclePanel','warmPanel','newPanel','listPanel'].forEach(id=>{ const el=$(id); if(el) el.classList.add('hidden'); }); }
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  // Splash interactions
-  const btnStart = $('btnStart'); if(btnStart) btnStart.addEventListener('click', ()=> showPanel('panel-profile'));
-  const btnHelp = $('btnHelp'); if(btnHelp) btnHelp.addEventListener('click', ()=> { const m = $('modalHelp'); if(m){ m.style.display='flex'; m.classList.remove('hidden'); } });
-  const closeHelp = $('closeHelp'); if(closeHelp) closeHelp.addEventListener('click', ()=> { const m = $('modalHelp'); if(m){ m.style.display='none'; m.classList.add('hidden'); } });
-  const btnResetTop = $('btnResetTop'); if(btnResetTop) btnResetTop.addEventListener('click', ()=> { if(confirm('Supprimer toutes les données locales ?')){ localStorage.removeItem(STORAGE_KEY); DB = defaultDB(); saveDB(DB); location.reload(); } });
+document.addEventListener('DOMContentLoaded', async ()=>{
+  // migration then UI init
+  await migrateFromLocalStorage();
+  await refreshProfileLine();
 
-  // Profile save
-  const saveProfile = $('saveProfile'); if(saveProfile) saveProfile.addEventListener('click', ()=>{
-    const d = getDB();
-    d.profile.nom = ($('nom')?.value||'').trim();
-    d.profile.prenom = ($('prenom')?.value||'').trim();
-    d.profile.classe = ($('classe')?.value||'').trim();
-    setDB(d); updateProfileLine(); alert('Profil enregistré'); showPanel('panel-dashboard');
+  // splash
+  $('startBtn').addEventListener('click', ()=>{ hideAll(); $('profilePanel').classList.remove('hidden'); });
+  $('helpBtn').addEventListener('click', ()=>{ $('helpModal').style.display='flex'; });
+  $('closeHelp').addEventListener('click', ()=>{ $('helpModal').style.display='none'; });
+  $('resetBtn').addEventListener('click', ()=>{ if(confirm('Supprimer toutes les données locales ?')){ idbClear(STORE_PROFILE); idbClear(STORE_CYCLES); location.reload(); } });
+
+  // profile save
+  $('saveProfile').addEventListener('click', async ()=>{
+    const p = { id:'profile', nom: $('nom').value.trim(), prenom: $('prenom').value.trim(), classe: $('classe').value.trim() };
+    await idbPut(STORE_PROFILE, p); alert('Profil enregistré'); hideAll(); $('dashboard').classList.remove('hidden'); await refreshProfileLine();
   });
-  const backToSplash = $('backToSplash'); if(backToSplash) backToSplash.addEventListener('click', ()=> showPanel('panel-splash'));
+  $('backToSplash').addEventListener('click', ()=>{ hideAll(); $('splash').classList.remove('hidden'); });
 
-  // Dashboard main buttons
-  const btnCycle = $('btnCycle'); if(btnCycle) btnCycle.addEventListener('click', ()=> { renderCycles(); showPanel('panel-cycle'); });
-  const btnWarmup = $('btnWarmup'); if(btnWarmup) btnWarmup.addEventListener('click', ()=> {
-    const c = DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert("Sélectionne ou crée d'abord un cycle"); renderCycles(); showPanel('panel-cycle'); return; }
-    $('warmupCycleName').textContent = c.name; $('warmText').value = c.warmup||''; showPanel('panel-warmup');
+  // dashboard buttons
+  $('cycleBtn').addEventListener('click', async ()=>{ hideAll(); $('cyclePanel').classList.remove('hidden'); renderCycles(); });
+  $('warmBtn').addEventListener('click', async ()=>{
+    const selected = await getSelectedCycle();
+    if(!selected){ alert("Sélectionne ou crée d'abord un cycle"); hideAll(); $('cyclePanel').classList.remove('hidden'); renderCycles(); return; }
+    $('warmCycleName').textContent = selected.name; $('warmText').value = selected.warmup||''; hideAll(); $('warmPanel').classList.remove('hidden');
   });
-  const btnNew = $('btnNew'); if(btnNew) btnNew.addEventListener('click', ()=> {
-    const c = DB.cycles.find(x=>x.id===DB.selected); if(!c){ alert("Sélectionne ou crée d'abord un cycle"); renderCycles(); showPanel('panel-cycle'); return; }
-    $('sessionText').value=''; showPanel('panel-newsession');
+  $('newBtn').addEventListener('click', async ()=>{
+    const selected = await getSelectedCycle();
+    if(!selected){ alert("Sélectionne ou crée d'abord un cycle"); hideAll(); $('cyclePanel').classList.remove('hidden'); renderCycles(); return; }
+    $('sessionText').value=''; hideAll(); $('newPanel').classList.remove('hidden');
   });
-  const btnList = $('btnList'); if(btnList) btnList.addEventListener('click', ()=> { renderSessions(); showPanel('panel-list'); });
+  $('listBtn').addEventListener('click', ()=>{ hideAll(); $('listPanel').classList.remove('hidden'); renderSessions(); });
 
-  // Cycle create/select
-  const createCycle = $('createCycle'); if(createCycle) createCycle.addEventListener('click', ()=> {
-    const name = ($('cycleName')?.value||'').trim(); if(!name){ alert('Nom requis'); return; }
-    let d = getDB(); let c = d.cycles.find(x=>x.name.toLowerCase()===name.toLowerCase());
-    if(!c){ c={id:nid(), name, warmup:'', sessions:[]}; d.cycles.push(c); }
-    d.selected = c.id; setDB(d); renderCycles(); alert('Cycle sélectionné : '+c.name); showPanel('panel-dashboard');
+  // cycle create/select
+  $('createCycle').addEventListener('click', async ()=>{
+    const name = ($('cycleName').value||'').trim(); if(!name){ alert('Nom requis'); return; }
+    const id = nid();
+    const obj = { id, name, warmup:'', sessions: [] };
+    await idbPut(STORE_CYCLES, obj);
+    // mark as selected by storing 'selectedCycle' in profile store
+    const prof = await idbGet(STORE_PROFILE, 'profile') || { id:'profile' };
+    prof.selectedCycle = id;
+    await idbPut(STORE_PROFILE, prof);
+    alert('Cycle créé & sélectionné : '+name);
+    hideAll(); $('dashboard').classList.remove('hidden'); await refreshProfileLine();
   });
-  const cycleBack = $('cycleBack'); if(cycleBack) cycleBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
+  $('cycleBack').addEventListener('click', ()=>{ hideAll(); $('dashboard').classList.remove('hidden'); });
 
-  // Warmup save
-  const saveWarm = $('saveWarm'); if(saveWarm) saveWarm.addEventListener('click', ()=> { let d=getDB(); const c=d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Aucun cycle'); return; } c.warmup = ($('warmText')?.value||''); setDB(d); alert('Échauffement enregistré'); showPanel('panel-dashboard'); });
-  const warmBack = $('warmBack'); if(warmBack) warmBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
-
-  // New session save
-  const saveSession = $('saveSession'); if(saveSession) saveSession.addEventListener('click', ()=> {
-    const txt = ($('sessionText')?.value||'').trim(); if(!txt){ alert('Écris quelque chose'); return; }
-    let d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Aucun cycle sélectionné'); return; }
-    const date = todayLux(); const now = new Date().toISOString(); const s={id:nid(), dateISO:date, text:txt, created_atISO:now};
-    c.sessions = c.sessions||[]; c.sessions.push(s); setDB(d); $('sessionText').value=''; alert('Séance enregistrée ('+date+')'); showPanel('panel-dashboard');
+  // save warmup
+  $('saveWarm').addEventListener('click', async ()=>{
+    const prof = await idbGet(STORE_PROFILE, 'profile') || { id:'profile' };
+    const sel = prof.selectedCycle;
+    if(!sel){ alert('Aucun cycle'); return; }
+    const c = await idbGet(STORE_CYCLES, sel);
+    c.warmup = $('warmText').value || '';
+    await idbPut(STORE_CYCLES, c);
+    alert('Échauffement enregistré'); hideAll(); $('dashboard').classList.remove('hidden');
   });
-  const sessionBack = $('sessionBack'); if(sessionBack) sessionBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
-  const listBack = $('listBack'); if(listBack) listBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
+  $('warmBack').addEventListener('click', ()=>{ hideAll(); $('dashboard').classList.remove('hidden'); });
 
-  // Exports CSV + PDF (include warmup)
-  const btnExportCSV = $('btnExportCSV'); if(btnExportCSV) btnExportCSV.addEventListener('click', ()=> {
-    const d=getDB(); const c=d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; }
-    const head=['nom','prenom','classe','cycle','date','texte','echauffement','created_at'];
-    const rows=(c.sessions||[]).map(s=>[ d.profile.nom, d.profile.prenom, d.profile.classe, c.name, s.dateISO, s.text.replace(/\n/g,' '), (c.warmup||'').replace(/\n/g,' '), s.created_atISO ]);
-    const csv=[head].concat(rows).map(r=> r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(';')).join('\n');
-    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  // save session (note: date fixed, not editable)
+  $('saveSession').addEventListener('click', async ()=>{
+    const txt = ($('sessionText').value||'').trim(); if(!txt){ alert('Écris quelque chose'); return; }
+    const prof = await idbGet(STORE_PROFILE, 'profile') || { id:'profile' };
+    const sel = prof.selectedCycle;
+    if(!sel){ alert('Aucun cycle sélectionné'); return; }
+    const c = await idbGet(STORE_CYCLES, sel);
+    const session = { id: nid(), dateISO: todayLux(), created_atISO: nowISO(), text: txt };
+    c.sessions = c.sessions || []; c.sessions.push(session);
+    await idbPut(STORE_CYCLES, c);
+    alert('Séance enregistrée ('+session.dateISO+')'); hideAll(); $('dashboard').classList.remove('hidden');
+  });
+  $('sessionBack').addEventListener('click', ()=>{ hideAll(); $('dashboard').classList.remove('hidden'); });
+
+  // export CSV includes warmup
+  $('exportCSV').addEventListener('click', async ()=>{
+    const prof = await idbGet(STORE_PROFILE, 'profile') || { nom:'',prenom:'',classe:'' };
+    const sel = prof.selectedCycle;
+    if(!sel){ alert('Sélectionne un cycle avant d\'exporter'); return; }
+    const c = await idbGet(STORE_CYCLES, sel);
+    const head = ['nom','prenom','classe','cycle','date','texte','echauffement','created_at'];
+    const rows = (c.sessions||[]).map(s=>[ prof.nom, prof.prenom, prof.classe, c.name, s.dateISO, s.text.replace(/\n/g,' '), (c.warmup||'').replace(/\n/g,' '), s.created_atISO ]);
+    const csv = [head].concat(rows).map(r=> r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(';')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${(prof.nom||'eleve')}_${(prof.prenom||'')}_${c.name||'cycle'}.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   });
 
-  const btnExportPDF = $('btnExportPDF'); if(btnExportPDF) btnExportPDF.addEventListener('click', async ()=> {
-    const d=getDB(); const c=d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; }
-    const wrapper=document.createElement('div'); wrapper.style.padding='28px'; wrapper.style.width='800px'; wrapper.style.background='#fff'; wrapper.style.fontFamily='Inter,Arial,Helvetica,sans-serif';
-    wrapper.innerHTML=`<div><h1 style="color:#0066ff;margin:0">${escapeHtml(c.name)} — Carnet</h1><div style="margin-top:6px">Élève : <strong>${escapeHtml(d.profile.nom||'')} ${escapeHtml(d.profile.prenom||'')}</strong> — Classe : <strong>${escapeHtml(d.profile.classe||'')}</strong></div><div style="height:12px"></div>`;
-    if(c.warmup){ wrapper.innerHTML += `<div style="margin-bottom:12px"><strong>Échauffement type :</strong><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(c.warmup)}</div></div>`; }
-    (c.sessions||[]).forEach(s=>{ wrapper.innerHTML += `<div style="margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #eee"><div style="font-weight:800;color:#0066ff">${escapeHtml(s.dateISO)}</div><div style="white-space:pre-wrap;margin-top:8px">${escapeHtml(s.text)}</div></div>`; });
-    wrapper.innerHTML += `<div style="margin-top:18px;color:#6b7280;font-size:0.9rem">Généré par ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</div></div>`;
-    document.body.appendChild(wrapper);
+  // export PDF
+  $('exportPDF').addEventListener('click', async ()=>{
+    const prof = await idbGet(STORE_PROFILE, 'profile') || { nom:'',prenom:'',classe:'' };
+    const sel = prof.selectedCycle;
+    if(!sel){ alert('Sélectionne un cycle avant d\'exporter'); return; }
+    const c = await idbGet(STORE_CYCLES, sel);
+    const container = document.createElement('div'); container.style.padding='24px'; container.style.width='800px'; container.style.background='#fff'; container.style.fontFamily='Inter,Arial,Helvetica,sans-serif';
+    container.innerHTML = `<h1 style="color:#0066ff;margin:0">${escapeHtml(c.name)} — Carnet</h1><div style="margin-top:6px">Élève : <strong>${escapeHtml(prof.nom||'')} ${escapeHtml(prof.prenom||'')}</strong> — Classe : <strong>${escapeHtml(prof.classe||'')}</strong></div><div style="height:12px"></div>`;
+    if(c.warmup){ container.innerHTML += `<div style="margin-bottom:12px"><strong>Échauffement type :</strong><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(c.warmup)}</div></div>`; }
+    (c.sessions||[]).forEach(s=>{ container.innerHTML += `<div style="margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #eee"><div style="font-weight:800;color:#0066ff">${escapeHtml(s.dateISO)}</div><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(s.text)}</div></div>`; });
+    container.innerHTML += `<div style="margin-top:18px;color:#6b7280;font-size:0.9rem">Généré par ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</div>`;
+    document.body.appendChild(container);
     try{
-      const canvas = await html2canvas(wrapper, { scale: 2 });
+      const canvas = await html2canvas(container, { scale: 2 });
       const imgData = canvas.toDataURL('image/png');
       const { jsPDF } = window.jspdf; const pdf = new jsPDF({ unit:'pt', format:'a4' });
       const pageWidth = pdf.internal.pageSize.getWidth(); const ratio = canvas.width / pageWidth; const imgHeightPt = canvas.height / ratio;
       pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeightPt);
       const blob = pdf.output('blob');
-      const filename = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.pdf`;
+      const filename = `${(prof.nom||'eleve')}_${(prof.prenom||'')}_${c.name||'cycle'}.pdf`;
       const file = new File([blob], filename, { type:'application/pdf' });
-      if(navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files:[file], title: filename, text:'Carnet ScanCarnet' }); } else { const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); alert('PDF généré et téléchargé (tu peux l\'envoyer par AirDrop ou mail).'); }
+      if(navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files:[file], title: filename, text:'Carnet ScanCarnet' }); } else { const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); alert('PDF généré et téléchargé (tu peux l\'envoyer par AirDrop ou mail).'); }
     }catch(err){ console.error(err); alert('Erreur génération PDF: '+(err.message||err)); }
-    finally{ wrapper.remove(); }
+    finally{ container.remove(); }
   });
 
-  // init profile inputs
-  $('nom').value = DB.profile.nom || ''; $('prenom').value = DB.profile.prenom || ''; $('classe').value = DB.profile.classe || '';
-  updateProfileLine();
+  // render cycles list with select buttons
+  async function renderCyclesList(node){
+    node.innerHTML = '';
+    const cycles = await idbGetAll(STORE_CYCLES);
+    if(!cycles || cycles.length===0){ node.innerHTML = '<div class="muted">Aucun cycle</div>'; return; }
+    cycles.forEach(c=>{
+      const div = document.createElement('div'); div.style.padding='8px'; div.style.borderBottom='1px solid #f1f7ff';
+      const prof = (await idbGet(STORE_PROFILE, 'profile')) || { selectedCycle: null }; // eslint-disable-line
+      div.innerHTML = `<strong>${escapeHtml(c.name)}</strong> <span class="muted">(${(c.sessions||[]).length} séances)</span> <div style="margin-top:8px"><button class="smallbtn selectBtn" data-id="${c.id}">Sélectionner</button> <button class="smallbtn editBtn" data-id="${c.id}">Éditer</button></div>`;
+      node.appendChild(div);
+    });
+    // attach handlers after rendering
+    node.querySelectorAll('.selectBtn').forEach(b=> b.addEventListener('click', async (e)=>{
+      const id = e.currentTarget.dataset.id;
+      const prof = await idbGet(STORE_PROFILE, 'profile') || { id:'profile' };
+      prof.selectedCycle = id; await idbPut(STORE_PROFILE, prof); alert('Cycle sélectionné'); hideAll(); $('dashboard').classList.remove('hidden'); await refreshProfileLine();
+    }));
+    node.querySelectorAll('.editBtn').forEach(b=> b.addEventListener('click', async (e)=>{
+      const id = e.currentTarget.dataset.id;
+      const c = await idbGet(STORE_CYCLES, id);
+      const newName = prompt('Renommer le cycle', c.name);
+      if(newName && newName.trim()){ c.name = newName.trim(); await idbPut(STORE_CYCLES, c); renderCyclesList(node); }
+    }));
+  }
+
+  async function renderCycles(){ await renderCyclesList($('cycleList')); }
+
+  // render sessions view
+  async function renderSessions(){
+    const node = $('sessions'); node.innerHTML = '';
+    const prof = await idbGet(STORE_PROFILE, 'profile') || { selectedCycle: null };
+    if(!prof.selectedCycle){ node.innerHTML = '<div class="muted">Aucun cycle sélectionné</div>'; return; }
+    const c = await idbGet(STORE_CYCLES, prof.selectedCycle);
+    if(!c || !(c.sessions||[]).length){ node.innerHTML = '<div class="muted">Aucune séance</div>'; return; }
+    c.sessions.slice().reverse().forEach(s=>{
+      const div = document.createElement('div'); div.style.marginBottom='12px'; div.innerHTML = `<div style="font-weight:800;color:#0066ff">${escapeHtml(s.dateISO)}</div><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(s.text)}</div>`;
+      node.appendChild(div);
+    });
+  }
+
+  // helper to get selected cycle object
+  async function getSelectedCycle(){ const prof = await idbGet(STORE_PROFILE, 'profile') || {}; if(!prof.selectedCycle) return null; return await idbGet(STORE_CYCLES, prof.selectedCycle); }
+
+  // renderCycles helper used elsewhere
+  window.renderCycles = renderCycles;
+
+  // backup / export all data as JSON zip
+  $('exportBackup').addEventListener('click', async ()=>{
+    const prof = await idbGet(STORE_PROFILE, 'profile') || {};
+    const cycles = await idbGetAll(STORE_CYCLES);
+    const payload = { profile: prof, cycles };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `ScanCarnet-backup-${(prof.nom||'eleve')}.json`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  });
+
+  // clear all
+  $('clearAll').addEventListener('click', async ()=>{
+    if(!confirm('Supprimer toutes les données locales ? Cette opération est irréversible.')) return;
+    await idbClear(STORE_CYCLES); await idbClear(STORE_PROFILE); location.reload();
+  });
+
+  // utilities for cycle rendering accessible globally
+  window.renderCyclesList = renderCyclesList;
 }); // DOMContentLoaded end
 
-function renderCycles(){
-  const node = document.getElementById('cycleList'); if(!node) return; node.innerHTML = '';
-  const d = getDB(); if(!d.cycles || d.cycles.length===0){ node.innerHTML = '<div style="color:#6b7280">Aucun cycle</div>'; return; }
-  d.cycles.forEach(c=>{
-    const el = document.createElement('div'); el.style.padding='8px'; el.style.borderBottom='1px solid #f1f7ff';
-    el.innerHTML = `<strong>${c.name}</strong> <span style="color:#6b7280">(${(c.sessions||[]).length} séances)</span> <div style="margin-top:8px"><button class="ghost" data-id="${c.id}">Sélectionner</button></div>`;
-    node.appendChild(el);
-    const btn = el.querySelector('button');
-    btn.addEventListener('click', (e)=>{ const id = e.currentTarget.dataset.id; let dd = getDB(); dd.selected = id; setDB(dd); alert('Cycle sélectionné'); showPanel('panel-dashboard'); });
-  });
-  updateProfileLine();
-}
-
-function renderSessions(){
-  const node = document.getElementById('sessionsContainer'); if(!node) return; node.innerHTML='';
-  const d = getDB(); const c = d.cycles.find(x=>x.id===d.selected); if(!c){ node.innerHTML='<div style="color:#6b7280">Aucun cycle sélectionné</div>'; return; }
-  if(!(c.sessions||[]).length){ node.innerHTML='<div style="color:#6b7280">Aucune séance</div>'; return; }
-  c.sessions.slice().reverse().forEach(s=>{
-    const el = document.createElement('div'); el.style.marginBottom='12px'; el.innerHTML = `<div style="font-weight:800;color:#0066ff">${s.dateISO}</div><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(s.text)}</div>`;
-    node.appendChild(el);
-  });
-  updateProfileLine();
-}
-
-function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 </script>
 </body>
 </html>
