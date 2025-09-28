@@ -143,10 +143,7 @@
     <footer>ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</footer>
   </div>
 
-  <div class="exports" role="dialog" aria-label="Exports">
-    <button class="csv" id="btnExportCSV">Exporter CSV</button>
-    <button class="pdf" id="btnExportPDF">Générer PDF</button>
-  </div>
+  <div class="exports" role="dialog" aria-label="Exports"><button class="csv" id="btnExportCSV">Exporter CSV</button><button class="pdf" id="btnExportPDF">Générer PDF</button><button id="btnPDFComplet">PDF complet</button><button id="btnSaveLocal">Enregistrer</button><label for="fileImportJSON" style="cursor:pointer;border:1px solid rgba(255,255,255,0.12);padding:8px 10px;border-radius:10px;font-weight:700">Import JSON</label><input type="file" id="fileImportJSON" accept="application/json" style="display:none"><button id="btnExportJSON">Export JSON</button><button id="btnSharePDF">Partager</button></div>
 
   <!-- Modal help -->
   <div id="modalHelp" class="hidden" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(3,7,18,0.45);z-index:100;padding:20px">
@@ -166,6 +163,7 @@
 <!-- libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="scancarnet-tools.js"></script>
 
 <script>
 // Unregister old SW and clear caches to avoid stale versions
@@ -252,7 +250,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   // Exports CSV + PDF (include warmup)
   const btnExportCSV = $('btnExportCSV'); if(btnExportCSV) btnExportCSV.addEventListener('click', ()=> {
-    const d=getDB(); const c=d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; }
+    const d=getDB(); const c=d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d'exporter'); return; }
     const head=['nom','prenom','classe','cycle','date','texte','echauffement','created_at'];
     const rows=(c.sessions||[]).map(s=>[ d.profile.nom, d.profile.prenom, d.profile.classe, c.name, s.dateISO, s.text.replace(/\n/g,' '), (c.warmup||'').replace(/\n/g,' '), s.created_atISO ]);
     const csv=[head].concat(rows).map(r=> r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(';')).join('\n');
@@ -274,7 +272,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       const pageWidth = pdf.internal.pageSize.getWidth(); const ratio = canvas.width / pageWidth; const imgHeightPt = canvas.height / ratio;
       pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeightPt);
       const blob = pdf.output('blob');
-      const filename = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.pdf`;
+      const filename = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${c.name||'cycle'}.pdf';
       const file = new File([blob], filename, { type:'application/pdf' });
       if(navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files:[file], title: filename, text:'Carnet ScanCarnet' }); } else { const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); alert('PDF généré et téléchargé (tu peux l\'envoyer par AirDrop ou mail).'); }
     }catch(err){ console.error(err); alert('Erreur génération PDF: '+(err.message||err)); }
@@ -312,5 +310,89 @@ function renderSessions(){
 
 function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 </script>
+
+<script>
+/* ==== Patch Add-ons: branchement PDF complet + sauvegarde + import/export + partage ==== */
+function getCurrentData(){ return getDB(); }
+function applyLoadedData(obj){
+  if(!obj || typeof obj !== 'object') return;
+  setDB(obj);
+  updateProfileLine(); try{ renderCycles(); }catch(e){} try{ renderSessions(); }catch(e){}
+}
+
+function buildPrintContainerForSelectedCycle() {
+  const d = getDB();
+  const c = d.cycles.find(x => x.id === d.selected);
+  if (!c) { alert('Sélectionne un cycle avant.'); return null; }
+  const wrap = document.createElement('div');
+  wrap.id = 'carnet-root';
+  wrap.style.padding = '28px';
+  wrap.style.width = '800px';
+  wrap.style.background = '#fff';
+  wrap.style.fontFamily = 'Inter,Arial,Helvetica,sans-serif';
+  const h = (s)=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  wrap.innerHTML = `
+    <div>
+      <h1 style="color:#0066ff;margin:0">${h(c.name)} — Carnet</h1>
+      <div style="margin-top:6px">
+        Élève : <strong>${h(d.profile.nom)} ${h(d.profile.prenom)}</strong> — Classe : <strong>${h(d.profile.classe)}</strong>
+      </div>
+      <div style="height:12px"></div>
+      ${c.warmup ? `<div style="margin-bottom:12px"><strong>Échauffement type :</strong><div style="white-space:pre-wrap;margin-top:6px">${h(c.warmup)}</div></div>` : ``}
+      ${(c.sessions||[]).map((s,idx)=>`
+        <div style="margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #eee">
+          <div style="font-weight:800;color:#0066ff">${h(s.dateISO)}</div>
+          <div style="white-space:pre-wrap;margin-top:8px">${h(s.text)}</div>
+        </div>
+        ${((idx+1)%8===0)?'<div class="page-break"></div>':''}
+      `).join('')}
+      <div style="margin-top:18px;color:#6b7280;font-size:0.9rem">ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</div>
+    </div>`;
+  document.body.appendChild(wrap);
+  return wrap;
+}
+
+(function(){
+  const boot = window.ScanCarnetTools.loadDataLocally();
+  if (boot) applyLoadedData(boot);
+
+  const b1 = document.getElementById('btnPDFComplet');
+  if (b1) b1.addEventListener('click', async()=>{
+    const root = buildPrintContainerForSelectedCycle(); if(!root) return;
+    try{
+      await window.ScanCarnetTools.generateFullPDF({ rootSelector:'#carnet-root', title:'Carnet d’entraînement' })
+        .then(pdf => pdf.save('Carnet.pdf'));
+    } finally { root.remove(); }
+  });
+
+  const share = document.getElementById('btnSharePDF');
+  if (share) share.addEventListener('click', async()=>{
+    const root = buildPrintContainerForSelectedCycle(); if(!root) return;
+    try{
+      await window.ScanCarnetTools.sharePDF({ rootSelector:'#carnet-root', title:'Carnet d’entraînement' });
+    } finally { root.remove(); }
+  });
+
+  const saveLocal = document.getElementById('btnSaveLocal');
+  if (saveLocal) saveLocal.addEventListener('click', ()=>{
+    const ok = window.ScanCarnetTools.saveDataLocally(getCurrentData());
+    alert(ok ? 'Données enregistrées sur cet appareil.' : 'Échec de l’enregistrement.');
+  });
+
+  const exp = document.getElementById('btnExportJSON');
+  if (exp) exp.addEventListener('click', ()=> window.ScanCarnetTools.exportDataJSON());
+
+  const imp = document.getElementById('fileImportJSON');
+  if (imp) imp.addEventListener('change', async (e)=>{
+    const f = e.target.files && e.target.files[0]; if(!f) return;
+    try{
+      const obj = await window.ScanCarnetTools.importDataJSONFromFile(f);
+      applyLoadedData(obj);
+    }catch(err){ console.error(err); alert('Import impossible (fichier invalide).'); }
+    finally{ e.target.value=''; }
+  });
+})();
+</script>
+
 </body>
 </html>

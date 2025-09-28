@@ -1,17 +1,10 @@
 
 /*!
- * ScanCarnet Add‑ons (PDF complet + sauvegarde locale + import/export + partage)
+ * ScanCarnet Add-ons (PDF complet + sauvegarde locale + import/export + partage)
  * Version: 1.0.0
- * Ce fichier est 100% additif : il n’écrase aucune fonction existante.
- * Il expose une API globale: window.ScanCarnetTools
- *
- * Dépendances optionnelles (chargées par la page appelante si nécessaire) :
- *  - jsPDF v2 (https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js)
- *  - html2canvas v1.4+ (https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js)
- *
- * RGPD : Les données sont stockées en localStorage sur l’appareil uniquement.
+ * API globale: window.ScanCarnetTools
+ * Dépendances: jsPDF v2 + html2canvas v1.4+ (déjà incluses dans index.html)
  */
-
 (function () {
   "use strict";
 
@@ -19,10 +12,10 @@
 
   function ensureDeps() {
     if (!(window.jspdf && window.jspdf.jsPDF)) {
-      throw new Error("jsPDF non chargé. Ajoutez <script src='https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js'></script>");
+      throw new Error("jsPDF non chargé.");
     }
     if (!window.html2canvas) {
-      throw new Error("html2canvas non chargé. Ajoutez <script src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js'></script>");
+      throw new Error("html2canvas non chargé.");
     }
   }
 
@@ -41,10 +34,8 @@
     pdf.setFontSize(10);
     for (var i = 1; i <= pageCount; i++) {
       pdf.setPage(i);
-      // En-tête
       pdf.text(String(title || "Carnet d’entraînement"), margin, 22);
-      // Pied de page
-      var footer = "ScanCarnet \u2013 " + new Date().toLocaleDateString() + " \u2013 Page " + i + "/" + pageCount;
+      var footer = "ScanCarnet – " + new Date().toLocaleDateString() + " – Page " + i + "/" + pageCount;
       pdf.text(footer, margin, pdf.internal.pageSize.getHeight() - 16);
     }
   }
@@ -53,14 +44,14 @@
     ensureDeps();
     opts = opts || {};
     var rootSelector = opts.rootSelector || "#carnet-root";
-    var title = opts.title || "Carnet d\u2019entraînement";
+    var title = opts.title || "Carnet d’entraînement";
 
     var root = document.querySelector(rootSelector);
-    if (!root) { alert("Zone \u00e0 imprimer introuvable (" + rootSelector + ")."); return; }
+    if (!root) { alert("Zone à imprimer introuvable (" + rootSelector + ")."); return; }
 
     injectPrintCSS();
 
-    var a4 = { pt: { w: 595.28, h: 841.89 } }; // A4 portrait en points
+    var a4 = { pt: { w: 595.28, h: 841.89 } };
     var scale = Math.min(2, (window.devicePixelRatio || 1) * 1.5);
 
     var canvas = await window.html2canvas(root, { scale: scale, backgroundColor: "#ffffff", useCORS: true });
@@ -147,7 +138,7 @@
 
   async function sharePDF(opts) {
     opts = opts || {};
-    var title = opts.title || "Carnet d\u2019entraînement";
+    var title = opts.title || "Carnet d’entraînement";
     try {
       var blob = await getPDFBlob(opts);
       var file = new File([blob], "Carnet.pdf", { type: "application/pdf" });
@@ -156,7 +147,7 @@
         await navigator.share({
           files: [file],
           title: title,
-          text: "Carnet d\u2019entraînement au format PDF."
+          text: "Carnet d’entraînement au format PDF."
         });
       } else {
         var url = URL.createObjectURL(blob);
@@ -165,12 +156,12 @@
         a.download = "Carnet.pdf";
         a.click();
         URL.revokeObjectURL(url);
-        alert("Le PDF a \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9. Joignez-le manuellement \u00e0 votre e-mail.");
-        window.location.href = "mailto:?subject=" + encodeURIComponent(title) + "&body=" + encodeURIComponent("Veuillez joindre le PDF t\u00e9l\u00e9charg\u00e9.");
+        alert("Le PDF a été téléchargé. Joignez-le manuellement à votre e-mail.");
+        window.location.href = "mailto:?subject=" + encodeURIComponent(title) + "&body=" + encodeURIComponent("Veuillez joindre le PDF téléchargé.");
       }
     } catch (e) {
       console.error(e);
-      alert("Partage impossible. Le PDF va \u00eatre t\u00e9l\u00e9charg\u00e9.");
+      alert("Partage impossible. Le PDF va être téléchargé.");
       var blob2 = await getPDFBlob(opts);
       var url2 = URL.createObjectURL(blob2);
       var a2 = document.createElement("a");
