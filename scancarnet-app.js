@@ -1,4 +1,18 @@
-// v1.7 — PDF plus pro (typo/couleurs/numéros de page) + bouton Aide (guide coloré)
+// v1.7.2 — fix SectionTitle, unregister SW early, PDF pro + guide coloré + import CSV
+// --- SW cleanup early to avoid cached broken versions ---
+(async function unregisterOldSW(){
+  try{
+    if('serviceWorker' in navigator){
+      const regs = await navigator.serviceWorker.getRegistrations();
+      for(const r of regs){ try{ await r.unregister(); }catch(e){} }
+    }
+    if('caches' in window){
+      const keys = await caches.keys();
+      for(const k of keys){ try{ await caches.delete(k); }catch(e){} }
+    }
+  }catch(e){}
+})();
+
 const STORAGE_KEY = 'scancarnet_v8';
 const $ = id => document.getElementById(id);
 function loadDB(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); }catch(e){ return {}; } }
@@ -90,7 +104,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   }));
 
-  // PDF export (pro, sans coupures, avec couleurs + numéros de page)
+  // PDF export (pro, sans coupures, couleurs + numéros de page)
   $('btnExportPDF')?.addEventListener('click', safe(async ()=>{
     const d = getDB(); 
     const c = d.cycles.find(x => x.id === d.selected); 
@@ -111,7 +125,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
       pdf.setTextColor(0,0,0);
     };
     const Meta = (txt)=>{ pdf.setFont('helvetica','normal'); pdf.setFontSize(11); pdf.setTextColor(80); pdf.text(txt, margin, y); y += 14; pdf.setTextColor(0); };
-    const SectionTitle = (txt, rgb)=>{ pdf.setTextColor(*rgb); pdf.setFont('helvetica','bold'); pdf.setFontSize(13); pdf.text(txt, margin, y); y += 16; pdf.setTextColor(0); };
+    const SectionTitle = (txt, rgb)=>{ 
+      pdf.setTextColor(rgb[0], rgb[1], rgb[2]); 
+      pdf.setFont('helvetica','bold'); pdf.setFontSize(13); 
+      pdf.text(txt, margin, y); y += 16; 
+      pdf.setTextColor(0); 
+    };
     const Line = ()=>{ pdf.setDrawColor(235); pdf.setLineWidth(0.8); pdf.line(margin, y, pageW-margin, y); y += 12; };
     const Para = (txt)=>{
       pdf.setFont('helvetica','normal'); pdf.setFontSize(12);
