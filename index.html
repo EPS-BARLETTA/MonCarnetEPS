@@ -42,6 +42,7 @@
   .input-row input{flex:1}
   .muted{color:var(--muted)}
   .dash-help{margin-top:8px}
+  /* Guide sections */
   .guide-wrap{max-width:760px}
   .guide{margin:10px 0;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.06);text-align:left}
   .guide h4{margin:0 0 6px 0}
@@ -286,19 +287,42 @@ document.addEventListener('DOMContentLoaded', ()=>{
   $('sessionBack')?.addEventListener('click', ()=> showPanel('panel-dashboard'));
   $('listBack')?.addEventListener('click', ()=> showPanel('panel-dashboard'));
 
-  // CSV export
+  // CSV export — MODIFIÉ : export GLOBAL (tous cycles + séances)
   $('btnExportCSV')?.addEventListener('click', safe(()=>{
-    const d = getDB(); 
-    const c = d.cycles.find(x=>x.id===d.selected); 
-    if (!c) { alert('Sélectionne un cycle avant d\'exporter'); return; }
+    const d = getDB();
+    if (!d.cycles || d.cycles.length === 0) {
+      alert("Aucun cycle à exporter");
+      return;
+    }
     const head = ['nom','prenom','classe','cycle','date','texte','echauffement','created_at'];
-    const esc = v => `"${String(v??'').replace(/"/g,'""').replace(/\r?\n/g,'\\n')}"`;
-    const rows = (c.sessions||[]).map(s => ([ d.profile.nom, d.profile.prenom, d.profile.classe, c.name, s.dateISO, s.text, (c.warmup||''), s.created_atISO ]));
+    const esc = v => `"${String(v ?? '').replace(/"/g,'""').replace(/\r?\n/g,'\\n')}"`;
+
+    const rows = [];
+    d.cycles.forEach(cycle => {
+      (cycle.sessions || []).forEach(s => {
+        rows.push([
+          d.profile.nom,
+          d.profile.prenom,
+          d.profile.classe,
+          cycle.name,
+          s.dateISO,
+          s.text,
+          cycle.warmup || '',
+          s.created_atISO || ''
+        ]);
+      });
+    });
+
+    if (rows.length === 0) {
+      alert("Aucune séance à exporter");
+      return;
+    }
+
     const csv = [head, ...rows].map(r => r.map(esc).join(';')).join('\n');
     const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url;
-    a.download = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${(c.name||'cycle')}.csv`;
+    a.download = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_carnet_complet.csv`;
     document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   }));
 
