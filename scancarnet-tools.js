@@ -1,7 +1,5 @@
 
-/*! ScanCarnet Tools SLIM – v1.4 (No-SW edition)
- * Multipage PDF helper using html2canvas + jsPDF
- */
+/*! ScanCarnet Tools SLIM – v1.5 */
 (function () {
   "use strict";
   function injectPrintCSS() {
