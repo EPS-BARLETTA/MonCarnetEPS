@@ -1,0 +1,123 @@
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>ScanCarnet – Intégration démo (Add‑ons)</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 16px; }
+    .session { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 8px 0; }
+    .session h3 { margin: 0 0 8px; }
+    .toolbar button { padding: 8px 12px; border-radius: 10px; border: 1px solid #ddd; background: #f8f8f8; }
+    .toolbar label { padding: 8px 12px; border-radius: 10px; border: 1px solid #ddd; background: #f8f8f8; }
+    .muted { color: #666; font-size: 13px; }
+  </style>
+
+  <!-- Dépendances -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <!-- Add‑ons -->
+  <script src="./scancarnet-tools.js"></script>
+</head>
+<body>
+  <h1>Carnet – Démo d’intégration</h1>
+  <p class="muted">Cette page ne remplace rien dans votre app. Elle montre juste comment brancher les boutons.</p>
+
+  <div class="toolbar" style="display:flex; gap:.5rem; flex-wrap:wrap; margin:.5rem 0;">
+    <button id="btn_pdf">📄 PDF</button>
+    <button id="btn_share">📤 Partager / Envoyer</button>
+    <button id="btn_save">💾 Enregistrer</button>
+    <button id="btn_export">⬇️ Export JSON</button>
+    <label style="display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;">
+      ⬆️ Import JSON
+      <input type="file" id="file_import" accept="application/json" style="display:none;">
+    </label>
+  </div>
+
+  <!-- Tout le contenu à inclure dans le PDF -->
+  <div id="carnet-root">
+    <header>
+      <h2>Athlète: Jean Dupont</h2>
+      <div class="muted">Objectif: 800m – S1 à S6</div>
+    </header>
+
+    <div id="sessions"></div>
+  </div>
+
+  <script>
+    // Démo de données (à remplacer par les vôtres)
+    window.SCANCARNET_DATA = {
+      athlete: { nom: "Dupont", prenom: "Jean" },
+      seances: Array.from({ length: 18 }).map((_, i) => ({
+        titre: "Séance " + (i + 1),
+        contenu: "Contenu détaillé de la séance " + (i + 1) + " : échauffement, éducatifs, corps de séance, retour au calme."
+      }))
+    };
+
+    function renderCarnet() {
+      const root = document.getElementById("sessions");
+      root.innerHTML = "";
+      (window.SCANCARNET_DATA.seances || []).forEach((s, idx) => {
+        const div = document.createElement("div");
+        div.className = "session";
+        div.innerHTML = "<h3>" + s.titre + "</h3><p>" + s.contenu + "</p>";
+        root.appendChild(div);
+        // Ajoute des sauts de page volontaires pour démo :
+        if ((idx + 1) % 6 === 0) {
+          const br = document.createElement("div");
+          br.className = "page-break";
+          root.appendChild(br);
+        }
+      });
+    }
+    window.renderCarnet = renderCarnet;
+    renderCarnet();
+
+    // Auto‑chargement au démarrage
+    (function() {
+      var boot = window.ScanCarnetTools.loadDataLocally();
+      if (boot) {
+        window.SCANCARNET_DATA = boot;
+        renderCarnet();
+      }
+    })();
+
+    // Brancher les boutons
+    document.getElementById('btn_pdf')?.addEventListener('click', () => {
+      window.ScanCarnetTools.generateFullPDF({ rootSelector: '#carnet-root', title: 'Carnet d’entraînement' })
+        .then(pdf => pdf.save('Carnet.pdf'));
+    });
+
+    document.getElementById('btn_share')?.addEventListener('click', () => {
+      window.ScanCarnetTools.sharePDF({ rootSelector: '#carnet-root', title: 'Carnet d’entraînement' });
+    });
+
+    document.getElementById('btn_save')?.addEventListener('click', () => {
+      const ok = window.ScanCarnetTools.saveDataLocally(window.SCANCARNET_DATA);
+      alert(ok ? 'Données enregistrées sur cet appareil.' : 'Échec de l’enregistrement.');
+    });
+
+    document.getElementById('btn_export')?.addEventListener('click', () => {
+      window.ScanCarnetTools.exportDataJSON();
+    });
+
+    document.getElementById('file_import')?.addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try {
+        const obj = await window.ScanCarnetTools.importDataJSONFromFile(file);
+        window.SCANCARNET_DATA = obj || {};
+        renderCarnet();
+        alert('Données importées.');
+      } catch (err) {
+        console.error(err);
+        alert('Import impossible (fichier invalide).');
+      } finally {
+        e.target.value = '';
+      }
+    });
+  </script>
+</body>
+</html>
