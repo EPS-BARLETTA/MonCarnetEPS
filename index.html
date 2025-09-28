@@ -102,6 +102,10 @@
       <div style="height:8px"></div>
       <button id="createCycle" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,var(--primary),#0096ff)">Créer / Sélectionner</button>
       <div id="cycleList" style="margin-top:12px;text-align:left"></div>
+      <div style="height:10px">
+        <label class="smallbtn" for="importCSV">Importer un CSV sauvegardé</label>
+        <input id="importCSV" type="file" accept=".csv,text/csv" style="display:none">
+      </div>
       <div style="height:8px"></div>
       <button id="cycleBack" class="smallbtn">Retour</button>
     </div>
@@ -151,6 +155,7 @@
         <li>Ajouter un échauffement type si tu veux.</li>
         <li>Nouvelle séance → écrire → Enregistrer (date figée).</li>
         <li>Exporter CSV ou PDF (l'échauffement est inclus dans les exports).</li>
+        <li>En cas de perte de données, va dans <strong>Cycle</strong> et <strong>Importe un CSV sauvegardé</strong>.</li>
       </ol>
     </div>
   </div>
@@ -158,7 +163,6 @@
 <!-- libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<!-- Add-on slim -->
 <script src="scancarnet-tools.js"></script>
 
 <script>
@@ -237,43 +241,146 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const sessionBack = $('sessionBack'); if(sessionBack) sessionBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
   const listBack = $('listBack'); if(listBack) listBack.addEventListener('click', ()=> showPanel('panel-dashboard'));
 
-  // Export CSV identique
-  const btnExportCSV = $('btnExportCSV'); if(btnExportCSV) btnExportCSV.addEventListener('click', ()=> {
-    const d=getDB(); const c=d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; }
-    const head=['nom','prenom','classe','cycle','date','texte','echauffement','created_at'];
-    const rows=(c.sessions||[]).map(s=>[ d.profile.nom, d.profile.prenom, d.profile.classe, c.name, s.dateISO, s.text.replace(/\\n/g,' '), (c.warmup||'').replace(/\\n/g,' '), s.created_atISO ]);
-    const csv=[head].concat(rows).map(r=> r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(';')).join('\\n');
-    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${(c.name||'cycle')}.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  // CSV robuste (BOM + 
+ préservés)
+  const btnExportCSV = $('btnExportCSV'); 
+  if (btnExportCSV) btnExportCSV.addEventListener('click', () => {
+    const d = getDB(); 
+    const c = d.cycles.find(x=>x.id===d.selected); 
+    if (!c) { alert('Sélectionne un cycle avant d\'exporter'); return; }
+
+    const head = ['nom','prenom','classe','cycle','date','texte','echauffement','created_at'];
+    const esc = v => `"${String(v??'').replace(/"/g,'""').replace(/\r?\n/g,'\\n')}"`;
+    const rows = (c.sessions||[]).map(s => ([
+      d.profile.nom, d.profile.prenom, d.profile.classe, c.name,
+      s.dateISO, s.text, (c.warmup||''), s.created_atISO
+    ]));
+
+    const csv = [head, ...rows].map(r => r.map(esc).join(';')).join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${(c.name||'cycle')}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   });
 
-  // Remplacement MINIMAL du bouton PDF: on génère un conteneur complet + multipage
-  const btnExportPDF = $('btnExportPDF'); if(btnExportPDF) btnExportPDF.addEventListener('click', async ()=> {
-    const d=getDB(); const c=d.cycles.find(x=>x.id===d.selected); if(!c){ alert('Sélectionne un cycle avant d\'exporter'); return; }
+  // PDF propre multipage
+  const btnExportPDF = $('btnExportPDF'); 
+  if (btnExportPDF) btnExportPDF.addEventListener('click', async () => {
+    const d = getDB(); 
+    const c = d.cycles.find(x => x.id === d.selected); 
+    if (!c) { alert('Sélectionne un cycle avant d\'exporter'); return; }
 
-    const wrapper=document.createElement('div');
-    wrapper.id='carnet-root';
-    wrapper.style.padding='28px'; wrapper.style.width='800px'; wrapper.style.background='#fff'; wrapper.style.fontFamily='Inter,Arial,Helvetica,sans-serif';
-    wrapper.innerHTML=`<div>
-      <h1 style="color:#0066ff;margin:0">${escapeHtml(c.name)} — Carnet</h1>
-      <div style="margin-top:6px">Élève : <strong>${escapeHtml(d.profile.nom||'')} ${escapeHtml(d.profile.prenom||'')}</strong> — Classe : <strong>${escapeHtml(d.profile.classe||'')}</strong></div>
-      <div style="height:12px"></div>
-      ${c.warmup ? `<div style="margin-bottom:12px"><strong>Échauffement type :</strong><div style="white-space:pre-wrap;margin-top:6px">${escapeHtml(c.warmup)}</div></div>` : ``}
-      ${(c.sessions||[]).map((s, idx)=>`
-        <div style="margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #eee">
-          <div style="font-weight:800;color:#0066ff">${escapeHtml(s.dateISO)}</div>
-          <div style="white-space:pre-wrap;margin-top:8px">${escapeHtml(s.text)}</div>
+    const wrap = document.createElement('div');
+    wrap.id = 'carnet-root';
+    wrap.style.cssText = 'width:800px;background:#fff;color:#0b1320;font-family:Inter,-apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:32px;';
+
+    const escHTML = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+    const headerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px">
+        <div>
+          <div style="font-size:22px;font-weight:800;color:#0a58ff;margin-bottom:4px">${escHTML(c.name)} — Carnet</div>
+          <div style="font-size:14px;color:#475569">
+            Élève : <strong>${escHTML(d.profile.nom)} ${escHTML(d.profile.prenom)}</strong> 
+            — Classe : <strong>${escHTML(d.profile.classe)}</strong>
+          </div>
         </div>
-        ${((idx+1)%8===0)?'<div class="page-break"></div>':''}
-      `).join('')}
-      <div style="margin-top:18px;color:#6b7280;font-size:0.9rem">Généré par ScanCarnet — Équipe EPS Lycée Vauban — LUXEMBOURG</div>
-    </div>`;
-    document.body.appendChild(wrapper);
+        <div style="text-align:right;font-size:12px;color:#64748b">
+          Généré par ScanCarnet<br/>${new Date().toLocaleDateString('fr-FR')}
+        </div>
+      </div>`;
+
+    const warmupHTML = c.warmup ? `
+      <div style="border:1px solid #e7eefc;border-radius:12px;padding:12px 14px;margin:8px 0 18px 0;
+                  background:linear-gradient(180deg,#f7fbff,#ffffff)">
+        <div style="font-weight:700;color:#0a58ff;margin-bottom:6px">Échauffement type</div>
+        <div style="white-space:pre-wrap;line-height:1.4">${escHTML(c.warmup)}</div>
+      </div>` : '';
+
+    const cards = (c.sessions||[]).map((s,i)=>`
+      <div style="border:1px solid #eef2ff;border-radius:12px;padding:12px 14px;margin:0 0 12px 0;
+                  background:#fff; box-shadow:0 4px 14px rgba(10,20,40,0.05)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-weight:800;color:#0a58ff">Séance ${i+1}</div>
+          <div style="font-size:12px;color:#64748b">${escHTML(s.dateISO)}</div>
+        </div>
+        <div style="white-space:pre-wrap;line-height:1.5">${escHTML(s.text)}</div>
+      </div>
+      ${((i+1)%8===0)?'<div class="page-break"></div>':''}
+    `).join('');
+
+    wrap.innerHTML = headerHTML + warmupHTML + cards + `
+      <div style="margin-top:8px;color:#64748b;font-size:12px;text-align:center">
+        Équipe EPS Lycée Vauban — LUXEMBOURG
+      </div>`;
+
+    document.body.appendChild(wrap);
     try{
       const pdf = await window.ScanCarnetTools.generateFullPDF({ rootSelector:'#carnet-root', title:'Carnet d’entraînement' });
       const filename = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${(c.name||'cycle')}.pdf`;
       pdf.save(filename);
     }catch(err){ console.error(err); alert('Erreur génération PDF: '+(err.message||err)); }
-    finally{ wrapper.remove(); }
+    finally{ wrap.remove(); }
+  });
+
+  // Import CSV discret (anti-perte)
+  const importCSVInput = $('importCSV');
+  if (importCSVInput) importCSVInput.addEventListener('change', async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const lines = text.replace(/\r/g,'').split('\n').filter(Boolean);
+      const header = lines.shift().split(';').map(h => h.replace(/^"|"$/g,'').toLowerCase());
+      const idx = name => header.indexOf(name);
+      const I = {
+        nom: idx('nom'), prenom: idx('prenom'), classe: idx('classe'),
+        cycle: idx('cycle'), date: idx('date'), texte: idx('texte'),
+        echauff: idx('echauffement'), created: idx('created_at')
+      };
+      if (I.cycle < 0 || I.date < 0 || I.texte < 0) {
+        alert('CSV inattendu : colonnes manquantes.'); e.target.value=''; return;
+      }
+      const byCycle = {};
+      for (const line of lines) {
+        const cells = line.split(';').map(s => s.replace(/^"|"$/g,'').replace(/""/g,'"').replace(/\\n/g, '\n').replace(/\n/g, '\n'));
+        const cy = cells[I.cycle] || 'Cycle';
+        if (!byCycle[cy]) byCycle[cy] = { name: cy, warmup: '', sessions: [] };
+        byCycle[cy].sessions.push({
+          id: Math.random().toString(36).slice(2,9),
+          dateISO: cells[I.date] || '',
+          text: cells[I.texte]?.replace(/\\n/g, '\n') || '',
+          created_atISO: cells[I.created] || new Date().toISOString()
+        });
+        if (I.echauff >= 0 && cells[I.echauff] && !byCycle[cy].warmup) {
+          byCycle[cy].warmup = cells[I.echauff]?.replace(/\\n/g, '\n') || '';
+        }
+      }
+      const firstLine = lines[0]?.split(';').map(s => s.replace(/^"|"$/g,'').replace(/""/g,'"')) || [];
+      const d = {
+        profile: {
+          nom: I.nom>=0 ? (firstLine[I.nom]||'') : '',
+          prenom: I.prenom>=0 ? (firstLine[I.prenom]||'') : '',
+          classe: I.classe>=0 ? (firstLine[I.classe]||'') : ''
+        },
+        cycles: Object.values(byCycle).map(cy => ({ id: Math.random().toString(36).slice(2,9), ...cy })),
+        selected: null
+      };
+      if (d.cycles.length) d.selected = d.cycles[0].id;
+      setDB(d);
+      renderCycles();
+      alert('Carnet reconstruit depuis le CSV.');
+    } catch (err) {
+      console.error(err);
+      alert('Import CSV impossible : ' + (err.message || err));
+    } finally {
+      e.target.value = '';
+    }
   });
 
   $('nom').value = DB.profile.nom || ''; $('prenom').value = DB.profile.prenom || ''; $('classe').value = DB.profile.classe || '';

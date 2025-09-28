@@ -47,7 +47,6 @@
       pdf.addImage(pageImg, "JPEG", 0, 0, pageWidth, sliceHeight);
       y += pageHeight;
     }
-    // header/footer light
     var pages = pdf.internal.getNumberOfPages();
     var margin = 24;
     pdf.setFont("helvetica", "normal"); pdf.setFontSize(10);
