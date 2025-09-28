@@ -1,8 +1,6 @@
 
-/*!
- * ScanCarnet Add-ons (SLIM) – PDF complet multipage
- * API globale: window.ScanCarnetTools
- * Dépendances côté page: jsPDF v2 + html2canvas v1.4+
+/*! ScanCarnet Tools SLIM – v1.4 (No-SW edition)
+ * Multipage PDF helper using html2canvas + jsPDF
  */
 (function () {
   "use strict";
@@ -47,14 +45,16 @@
       pdf.addImage(pageImg, "JPEG", 0, 0, pageWidth, sliceHeight);
       y += pageHeight;
     }
-    var pages = pdf.internal.getNumberOfPages();
-    var margin = 24;
-    pdf.setFont("helvetica", "normal"); pdf.setFontSize(10);
-    for (var i = 1; i <= pages; i++) {
-      pdf.setPage(i);
-      pdf.text(title, margin, 22);
-      pdf.text("ScanCarnet – " + new Date().toLocaleDateString() + " – Page " + i + "/" + pages, margin, pdf.internal.pageSize.getHeight() - 16);
-    }
+    try {
+      var pages = pdf.internal.getNumberOfPages();
+      var margin = 24;
+      pdf.setFont("helvetica", "normal"); pdf.setFontSize(10);
+      for (var i = 1; i <= pages; i++) {
+        pdf.setPage(i);
+        pdf.text(title, margin, 22);
+        pdf.text("ScanCarnet – " + new Date().toLocaleDateString() + " – Page " + i + "/" + pages, margin, pdf.internal.pageSize.getHeight() - 16);
+      }
+    } catch(e) {}
     return pdf;
   }
   window.ScanCarnetTools = { generateFullPDF: generateFullPDF };
