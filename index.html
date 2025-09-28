@@ -4,7 +4,6 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>ScanCarnet</title>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{ --bg:#f4f7fb; --card:#ffffff; --primary:#0a58ff; --accent1:#ff7a7a; --accent2:#6b8bff; --muted:#6b7280; --success:#34c759; --radius:14px; --shadow:0 12px 30px rgba(10,20,40,0.08); }
@@ -14,7 +13,7 @@
   .card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);text-align:center}
   .logo{width:84px;height:84px;border-radius:18px;background:linear-gradient(135deg,var(--primary),#00c6ff);display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:28px;margin:0 auto 12px}
   h1{margin:6px 0 0 0;font-size:28px}
-  .subtitle{color:var(--muted);margin-top:6px}
+  .subtitle{color:#6b7280;margin-top:6px}
   .bigbtn{min-width:260px;padding:14px 18px;border-radius:12px;border:0;font-weight:800;font-size:1.05rem;color:white;cursor:pointer;background:linear-gradient(90deg,var(--success),#00d4a6);box-shadow:0 8px 20px rgba(10,88,255,0.12);}
   .smallbtn{margin-top:12px;background:#fff;border:1px solid rgba(0,0,0,0.06);padding:8px 12px;border-radius:10px;color:#6b7280;cursor:pointer;font-weight:600}
   .ghost{background:#fff;color:#0a58ff;border:1px solid rgba(0,102,255,0.08);padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:600}
@@ -28,14 +27,12 @@
   .center-col{display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center}
   footer{margin-top:18px;text-align:center;color:#6b7280;font-size:0.9rem}
   .help-pill{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:999px;background:linear-gradient(90deg,#ffffff,rgba(255,255,255,0.85));border:1px solid rgba(10,88,255,0.08);cursor:pointer;box-shadow:0 6px 18px rgba(10,88,255,0.06);font-weight:700;color:#0a58ff}
-  .help-icon{width:18px;height:18px;border-radius:6px;display:inline-grid;place-items:center;background:linear-gradient(90deg,#ff7a7a,#ffbf69);color:white;font-size:12px;font-weight:800}
+  .help-icon{width:18px;height:18px;border-radius:6px;display:inline-grid;place-items:center;background:linear-gradient(90deg,var(--accent1),#ffbf69);color:white;font-size:12px;font-weight:800}
   .profile-card{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(10,88,255,0.06),#fff);border:1px solid rgba(10,88,255,0.06)}
-  .profile-hr{height:6px;width:70px;border-radius:6px;background:linear-gradient(90deg,#0a58ff,#00c6ff);margin-bottom:6px}
+  .profile-hr{height:6px;width:70px;border-radius:6px;background:linear-gradient(90deg,var(--primary),#00c6ff);margin-bottom:6px}
   .input-row{display:flex;gap:10px;width:100%}
   .input-row input{flex:1}
-  .muted{color:#6b7280}
   @media (max-width:720px){ .logo{width:64px;height:64px} .bigbtn{min-width:200px} .exports{right:12px;bottom:12px} .input-row{flex-direction:column} }
-  @media print { .page-break { page-break-before: always; } }
 </style>
 </head>
 <body>
@@ -62,7 +59,7 @@
       <div class="profile-card" style="width:100%;max-width:760px;margin:0 auto">
         <div class="profile-hr"></div>
         <h2 style="margin:0">Profil élève</h2>
-        <div class="muted">Renseigne tes informations (sera inclus dans l'export)</div>
+        <div class="subtitle">Renseigne tes informations (sera inclus dans l'export)</div>
         <div style="height:6px"></div>
         <div class="input-row">
           <input id="nom" placeholder="Nom" />
@@ -71,7 +68,7 @@
         </div>
         <div style="height:8px"></div>
         <div style="display:flex;gap:10px;justify-content:center;width:100%">
-          <button id="saveProfile" class="bigbtn" style="background:linear-gradient(90deg,#0a58ff,#00a0ff)">Sauvegarder</button>
+          <button id="saveProfile" class="bigbtn" style="background:linear-gradient(90deg,var(--primary),#00a0ff)">Sauvegarder</button>
           <button id="backToSplash" class="smallbtn">Retour</button>
         </div>
       </div>
@@ -81,10 +78,10 @@
       <h2 id="profileLine">—</h2>
       <div class="subtitle" style="margin-bottom:12px">Ton carnet — actions</div>
       <div style="display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center">
-        <button id="btnCycle" class="bigbtn" style="background:linear-gradient(90deg,#0a58ff,#0096ff)">Cycle</button>
-        <button id="btnWarmup" class="bigbtn" style="background:linear-gradient(90deg,#ff7a7a,#ffb86b)">Échauffement</button>
-        <button id="btnNew" class="bigbtn" style="background:linear-gradient(90deg,#34c759,#00d4a6)">Nouvelle séance</button>
-        <button id="btnList" class="bigbtn" style="background:linear-gradient(90deg,#6b8bff,#6b8bff)">Voir séances</button>
+        <button id="btnCycle" class="bigbtn" style="background:linear-gradient(90deg,var(--primary),#0096ff)">Cycle</button>
+        <button id="btnWarmup" class="bigbtn" style="background:linear-gradient(90deg,var(--accent1),#ffb86b)">Échauffement</button>
+        <button id="btnNew" class="bigbtn" style="background:linear-gradient(90deg,var(--success),#00d4a6)">Nouvelle séance</button>
+        <button id="btnList" class="bigbtn" style="background:linear-gradient(90deg,var(--accent2),#6b8bff)">Voir séances</button>
       </div>
     </div>
 
@@ -92,7 +89,7 @@
       <h3>Cycle (APSA)</h3>
       <input id="cycleName" placeholder="Ex : Badminton" />
       <div style="height:8px"></div>
-      <button id="createCycle" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,#0a58ff,#0096ff)">Créer / Sélectionner</button>
+      <button id="createCycle" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,var(--primary),#0096ff)">Créer / Sélectionner</button>
       <div id="cycleList" style="margin-top:12px;text-align:left"></div>
       <div style="height:10px">
         <label class="smallbtn" for="importCSV">Importer un CSV sauvegardé</label>
@@ -107,7 +104,7 @@
       <div id="warmupCycleName" class="subtitle">—</div>
       <textarea id="warmText" placeholder="- Footing 8 min"></textarea>
       <div style="height:8px"></div>
-      <button id="saveWarm" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,#ff7a7a,#ffb86b)">Enregistrer</button>
+      <button id="saveWarm" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,var(--accent1),#ffb86b)">Enregistrer</button>
       <div style="height:8px"></div>
       <button id="warmBack" class="smallbtn">Retour</button>
     </div>
@@ -117,7 +114,7 @@
       <div class="subtitle">Date ajoutée automatiquement (Europe/Luxembourg).</div>
       <textarea id="sessionText" placeholder="Décris la séance..."></textarea>
       <div style="height:8px"></div>
-      <button id="saveSession" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,#34c759,#00d4a6)">Enregistrer séance</button>
+      <button id="saveSession" class="bigbtn" style="min-width:200px;background:linear-gradient(90deg,var(--success),#00d4a6)">Enregistrer séance</button>
       <div style="height:8px"></div>
       <button id="sessionBack" class="smallbtn">Retour</button>
     </div>
@@ -152,10 +149,7 @@
     </div>
   </div>
 
-<!-- libs -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="scancarnet-tools.js"></script>
 <script src="scancarnet-app.js"></script>
 </body>
 </html>
