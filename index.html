@@ -42,16 +42,10 @@
   .input-row input{flex:1}
   .muted{color:var(--muted)}
   .dash-help{margin-top:8px}
-  /* Guide sections */
   .guide-wrap{max-width:760px}
   .guide{margin:10px 0;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.06);text-align:left}
   .guide h4{margin:0 0 6px 0}
   .guide p{margin:0}
-  .guide.blue{border-left:6px solid var(--blue); background:var(--tblue)}
-  .guide.orange{border-left:6px solid var(--orange); background:var(--torange)}
-  .guide.green{border-left:6px solid var(--green); background:var(--tgreen)}
-  .guide.purple{border-left:6px solid var(--purple); background:var(--tpurple)}
-  .guide.pink{border-left:6px solid var(--pink); background:var(--tpink)}
   @media (max-width:720px){ .logo{width:64px;height:64px} .bigbtn{min-width:200px} .exports{right:12px;bottom:12px} .input-row{flex-direction:column} }
 </style>
 </head>
@@ -105,7 +99,7 @@
         <button id="btnWarmup" class="bigbtn" style="background:linear-gradient(90deg,var(--accent1),#ffb86b)">Échauffement</button>
         <button id="btnNew" class="bigbtn" style="background:linear-gradient(90deg,var(--success),#00d4a6)">Nouvelle séance</button>
         <button id="btnList" class="bigbtn" style="background:linear-gradient(90deg,var(--accent2),#6b8bff)">Voir séances</button>
-        <button id="btnHelpGuide" class="smallbtn dash-help">Aide (guide)</button>
+        <button id="btnHelpGuide" class="bigbtn" style="background:linear-gradient(90deg,var(--success),#00d4a6)">Aide</button>
       </div>
     </div>
 
@@ -168,38 +162,34 @@
       <div style="display:flex;justify-content:space-between;align-items:center"><strong>Aide — ScanCarnet</strong><button id="closeHelp" class="ghost">Fermer</button></div>
       <div style="height:8px"></div>
       <div class="guide-wrap">
-        <div class="guide blue">
-          <h4>Cycle (bleu foncé)</h4>
-          <p>Crée ou sélectionne un cycle (ex : Badminton). Tu peux en avoir plusieurs. L'échauffement et les séances sont liés au cycle choisi.</p>
-        </div>
-        <div class="guide orange">
-          <h4>Échauffement (orange)</h4>
-          <p>Saisis un échauffement type pour le cycle en cours. Il sera inclus automatiquement dans le CSV et le PDF.</p>
-        </div>
-        <div class="guide green">
-          <h4>Nouvelle séance (vert)</h4>
-          <p>Écris ton contenu, puis <strong>Enregistrer séance</strong>. La date du jour (Luxembourg) est ajoutée automatiquement.</p>
-        </div>
-        <div class="guide purple">
-          <h4>Voir séances (violet)</h4>
-          <p>Liste toutes les séances du cycle sélectionné (les plus récentes en haut).</p>
-        </div>
-        <div class="guide orange">
-          <h4>Exporter CSV (orange)</h4>
-          <p>Télécharge un fichier CSV (UTF‑8) avec toutes les séances + échauffement + profil. À conserver dans Fichiers/iCloud.</p>
-        </div>
-        <div class="guide pink">
-          <h4>Générer PDF (rose/violet)</h4>
-          <p>Crée un PDF propre, sans coupures de blocs. Idéal pour remise/partage.</p>
+        <div class="guide">
+          <h4>Bouton « Cycle »</h4>
+          <p>Crée ou sélectionne le cycle (ex : Badminton). L’échauffement et les séances seront liés au cycle actif.</p>
         </div>
         <div class="guide">
-          <h4>Importer CSV (gris)</h4>
-          <p>En cas de perte : va dans <strong>Cycle</strong> → <em>Importer un CSV sauvegardé</em> pour reconstruire le carnet et reprendre le travail.</p>
+          <h4>Bouton « Échauffement »</h4>
+          <p>Écris un échauffement type pour le cycle. Il sera automatiquement ajouté dans le CSV et le PDF.</p>
+        </div>
+        <div class="guide">
+          <h4>Bouton « Nouvelle séance »</h4>
+          <p>Décris la séance puis appuie sur « Enregistrer séance ». La date du jour (Luxembourg) est ajoutée automatiquement.</p>
+        </div>
+        <div class="guide">
+          <h4>Bouton « Voir séances »</h4>
+          <p>Affiche toutes les séances enregistrées pour le cycle sélectionné (les plus récentes en haut).</p>
+        </div>
+        <div class="guide">
+          <h4>Exporter / Importer</h4>
+          <p>« Exporter CSV » pour sauvegarder. Si l’appareil est vidé, va dans « Cycle » puis « Importer un CSV sauvegardé » pour récupérer et continuer à travailler.</p>
         </div>
         <div class="guide">
           <h4>Confidentialité</h4>
-          <p>Tout reste en local sur l'appareil (RGPD ok). Aucun envoi serveur.</p>
+          <p>Tout reste en local sur l’appareil (aucun envoi serveur).</p>
         </div>
+      </div>
+      <div style="height:12px"></div>
+      <div style="display:flex;justify-content:flex-end">
+        <button id="helpBackToMenu" class="bigbtn">Retour au menu</button>
       </div>
     </div>
   </div>
@@ -207,8 +197,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-// v1.7.3 — Single-file fix (no external JS). SW cleanup + PDF pro + guide + import CSV.
-// --- SW cleanup early to avoid cached broken versions ---
+// v1.7.4 — Single-file; Aide = gros bouton + "Retour au menu"; texte mis à jour sans couleurs
 (async function unregisterOldSW(){
   try{
     if('serviceWorker' in navigator){
@@ -380,20 +369,19 @@ document.addEventListener('DOMContentLoaded', ()=>{
       Line();
     });
 
-    // Footer numbering on each page
     const pageCount = pdf.internal.getNumberOfPages();
     for (let i=1;i<=pageCount;i++){
       pdf.setPage(i);
       pdf.setFont('helvetica','normal'); pdf.setFontSize(10);
       pdf.setTextColor(120);
-      pdf.text(`ScanCarnet • Page ${i}/${pageCount}`, pageW - margin - 130, pageH - 16);
+      pdf.text(`ScanCarnet • Page ${i}/${pageCount}`, pageW - 178, pageH - 16);
     }
 
     const filename = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${(c.name||'cycle')}.pdf`;
     pdf.save(filename);
   }));
 
-  // Import CSV (recharge & retravailler)
+  // Import CSV
   $('importCSV')?.addEventListener('change', (async (e)=>{
     try {
       const file = e.target.files && e.target.files[0]; if (!file) return;
@@ -448,10 +436,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
   }));
 
-  // Init
-  $('nom').value = DB.profile.nom || ''; $('prenom').value = DB.profile.prenom || ''; $('classe').value = DB.profile.classe || '';
-  updateProfileLine();
+  // Aide: retour au menu principal
+  $('helpBackToMenu')?.addEventListener('click', ()=>{ closeGuide(); showPanel('panel-dashboard'); });
 });
+
 function openGuide(){ const m = $('modalHelp'); if(m){ m.style.display='flex'; m.classList.remove('hidden'); } }
 function closeGuide(){ const m = $('modalHelp'); if(m){ m.style.display='none'; m.classList.add('hidden'); } }
 function renderCycles(){
