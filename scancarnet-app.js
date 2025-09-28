@@ -1,4 +1,4 @@
-// v1.6 — PDF sans coupure de blocs (jsPDF direct) + import CSV pour recharger et retravailler
+// v1.7 — PDF plus pro (typo/couleurs/numéros de page) + bouton Aide (guide coloré)
 const STORAGE_KEY = 'scancarnet_v8';
 const $ = id => document.getElementById(id);
 function loadDB(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); }catch(e){ return {}; } }
@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   // Splash
   $('btnStart')?.addEventListener('click', ()=> showPanel('panel-profile'));
-  $('btnHelp')?.addEventListener('click', ()=> { const m = $('modalHelp'); if(m){ m.style.display='flex'; m.classList.remove('hidden'); } });
-  $('closeHelp')?.addEventListener('click', ()=> { const m = $('modalHelp'); if(m){ m.style.display='none'; m.classList.add('hidden'); } });
+  $('btnHelp')?.addEventListener('click', ()=> openGuide());
+  $('closeHelp')?.addEventListener('click', ()=> closeGuide());
   $('btnResetTop')?.addEventListener('click', ()=> { if(confirm('Supprimer toutes les données locales ?')){ localStorage.removeItem(STORAGE_KEY); DB = defaultDB(); saveDB(DB); location.reload(); } });
 
   // Profil
@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     $('sessionText').value=''; showPanel('panel-newsession');
   });
   $('btnList')?.addEventListener('click', ()=> { renderSessions(); showPanel('panel-list'); });
+  $('btnHelpGuide')?.addEventListener('click', ()=> openGuide());
 
   // Cycle
   $('createCycle')?.addEventListener('click', safe(()=>{
@@ -89,7 +90,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   }));
 
-  // PDF export (jsPDF direct, no block split)
+  // PDF export (pro, sans coupures, avec couleurs + numéros de page)
   $('btnExportPDF')?.addEventListener('click', safe(async ()=>{
     const d = getDB(); 
     const c = d.cycles.find(x => x.id === d.selected); 
@@ -98,12 +99,20 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const pdf = new jsPDF({ unit:'pt', format:'a4' });
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();
-    const margin = 40;
+    const margin = 48;
     let y = margin;
 
-    const H1 = (txt)=>{ pdf.setFont('helvetica','bold'); pdf.setFontSize(16); pdf.text(txt, margin, y); y += 18; };
-    const Sub = (txt)=>{ pdf.setFont('helvetica','normal'); pdf.setFontSize(11); pdf.text(txt, margin, y); y += 14; };
-    const Line = ()=>{ pdf.setDrawColor(230); pdf.setLineWidth(0.8); pdf.line(margin, y, pageW-margin, y); y += 10; };
+    const color = { blue:[10,88,255], purple:[107,139,255], green:[52,199,89], orange:[255,151,77], pink:[236,72,153], gray:[100,116,139] };
+
+    const H0 = (txt)=>{
+      pdf.setTextColor(...color.blue); pdf.setFont('helvetica','bold'); pdf.setFontSize(20);
+      pdf.text(txt, margin, y); y += 10;
+      pdf.setDrawColor(230); pdf.setLineWidth(1); pdf.line(margin, y, pageW-margin, y); y += 16;
+      pdf.setTextColor(0,0,0);
+    };
+    const Meta = (txt)=>{ pdf.setFont('helvetica','normal'); pdf.setFontSize(11); pdf.setTextColor(80); pdf.text(txt, margin, y); y += 14; pdf.setTextColor(0); };
+    const SectionTitle = (txt, rgb)=>{ pdf.setTextColor(*rgb); pdf.setFont('helvetica','bold'); pdf.setFontSize(13); pdf.text(txt, margin, y); y += 16; pdf.setTextColor(0); };
+    const Line = ()=>{ pdf.setDrawColor(235); pdf.setLineWidth(0.8); pdf.line(margin, y, pageW-margin, y); y += 12; };
     const Para = (txt)=>{
       pdf.setFont('helvetica','normal'); pdf.setFontSize(12);
       const lines = pdf.splitTextToSize(txt, pageW - margin*2);
@@ -114,42 +123,43 @@ document.addEventListener('DOMContentLoaded', ()=>{
     };
 
     // Header
-    H1(`${c.name} — Carnet`);
-    Sub(`Élève : ${d.profile.nom||''} ${d.profile.prenom||''} — Classe : ${d.profile.classe||''}`);
-    Sub(new Date().toLocaleDateString('fr-FR'));
+    H0(`${c.name} — Carnet d'entraînement`);
+    Meta(`Élève : ${d.profile.nom||''} ${d.profile.prenom||''} — Classe : ${d.profile.classe||''}`);
+    Meta(`Date : ${new Date().toLocaleDateString('fr-FR')}`);
     Line();
 
-    // Warmup block
+    // Échauffement (bloc indivisible)
     if (c.warmup && c.warmup.trim().length){
-      const title = "Échauffement type";
       const content = c.warmup.replace(/\r?\n/g, '\n');
-      const estH = 16 + 6 + (pdf.splitTextToSize(content, pageW - margin*2).length * 14) + 12;
+      const bodyLines = pdf.splitTextToSize(content, pageW - margin*2);
+      const estH = 16 + (bodyLines.length * 14) + 12;
       if (y + estH > pageH - margin){ pdf.addPage(); y = margin; }
-      pdf.setFont('helvetica','bold'); pdf.setFontSize(13); pdf.text(title, margin, y); y += 16;
+      SectionTitle("Échauffement type", color.orange);
       Para(content);
-      y += 6;
       Line();
     }
 
-    // Sessions
+    // Séances
     const sessions = (c.sessions||[]);
     sessions.forEach((s, i)=>{
-      const title = `Séance ${i+1} — ${s.dateISO}`;
+      const heading = `Séance ${i+1} — ${s.dateISO}`;
       const content = (s.text||'').replace(/\r?\n/g, '\n');
       const bodyLines = pdf.splitTextToSize(content, pageW - margin*2);
-      const estH = 16 + 6 + (bodyLines.length * 14) + 12;
+      const estH = 16 + (bodyLines.length * 14) + 12;
       if (y + estH > pageH - margin){ pdf.addPage(); y = margin; }
-      pdf.setFont('helvetica','bold'); pdf.setFontSize(13); pdf.text(title, margin, y); y += 16;
+      SectionTitle(heading, color.blue);
       Para(content);
-      y += 6;
       Line();
     });
 
-    // Footer
-    if (y + 18 > pageH - margin){ pdf.addPage(); y = margin; }
-    pdf.setFont('helvetica','normal'); pdf.setFontSize(10);
-    pdf.setTextColor(100);
-    pdf.text('Équipe EPS Lycée Vauban — LUXEMBOURG • ScanCarnet', margin, pageH - 18);
+    // Footer numbering on each page
+    const pageCount = pdf.internal.getNumberOfPages();
+    for (let i=1;i<=pageCount;i++){
+      pdf.setPage(i);
+      pdf.setFont('helvetica','normal'); pdf.setFontSize(10);
+      pdf.setTextColor(120);
+      pdf.text(`ScanCarnet • Page ${i}/${pageCount}`, pageW - margin - 130, pageH - 16);
+    }
 
     const filename = `${(d.profile.nom||'eleve')}_${(d.profile.prenom||'')}_${(c.name||'cycle')}.pdf`;
     pdf.save(filename);
@@ -214,6 +224,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
   $('nom').value = DB.profile.nom || ''; $('prenom').value = DB.profile.prenom || ''; $('classe').value = DB.profile.classe || '';
   updateProfileLine();
 });
+
+function openGuide(){
+  const m = $('modalHelp'); if(m){ m.style.display='flex'; m.classList.remove('hidden'); }
+}
+function closeGuide(){
+  const m = $('modalHelp'); if(m){ m.style.display='none'; m.classList.add('hidden'); }
+}
 
 function renderCycles(){
   const node = document.getElementById('cycleList'); if(!node) return; node.innerHTML = '';
